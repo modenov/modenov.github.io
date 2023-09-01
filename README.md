@@ -1,5 +1,6 @@
-# Modenov.Ru-Web
+# Modenov.Ru — Website
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/modenov-ru-web)
+Tatuuma.ru.
 
 Official website of Vladimir Modenov.
+(c) 2023. All right reserved.

@@ -57,6 +57,9 @@ a:active {
     display: block;
     text-align: center;
   }
+  .info-text {
+  margin-left: 0;
+  }
 }
 
 .card {
@@ -117,7 +120,7 @@ a:active {
   margin-right: 0;
 }
 
-@media (max-width: 650px) {
+@media (max-width: 765px) {
   .form-row {
     display: block;
   }

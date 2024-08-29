@@ -1,6 +1,7 @@
-# Modenov.Ru — Website
+# Modenov — GitHub pages playground site
 
-[Modenov.ru.](https://modenov.ru/)
+My official website repository that I use for my experiments and lab tests. It is hosted on GitHub Pages.
 
-Official website of Vladimir Modenov.
-(c) 2023. All right reserved.
+Site address: https://modenov.github.io/modenov/
+
+(c) 2024. All right reserved.

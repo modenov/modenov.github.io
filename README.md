@@ -4,4 +4,4 @@ My official website repository that I use for my experiments and lab tests. It i
 
 Site address: https://modenov.github.io/
 
-(c) 2024. All right reserved.
+(c) 2023-2025. All right reserved.

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Транслитератор для поисковиков — Владимир Моденов</title>
+  <meta name="description" content="Онлайн сервис для перевода русских букв в латинские по правилам, которые правильно воспринимают поисковые системы Яндекс и Google. Сервис транслитерации для подбора доменных имён и ЧПУ.">
+  <meta name="author" content="Владимир Моденов">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://modenov.github.io/seo-transliterator/">
+  <meta property="og:title" content="Онлайн транслитератор для поисковиков">
+  <meta property="og:description" content="Перевод русских букв в латиницу для доменов и ЧПУ. Оптимально для Яндекс и Google.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Онлайн транслитератор для поисковиков</h1>
+
+    <p class="lead">
+      Онлайн-сервис для перевода русских букв в латинские по правилам, которые правильно воспринимают поисковые системы Яндекс и Google.
+      «Сервис транслитерация» для поисковиков используется для подбора доменных имён и информативных адресов страниц сайтов (ЧПУ). 
+      Правильная транслитерация в именах доменов и названиях страниц положительно влияет на место сайта в выдаче поисковиков Яндекс и Google.
+    </p>
+
+    <section class="io">
+      <label for="src" class="field-label">Русский текст для перевода</label>
+      <div class="field-row">
+        <textarea id="src" class="field" rows="4" placeholder="Введите текст на русском…"></textarea>
+        <button id="clearBtn" class="btn btn-secondary" type="button" title="Очистить поле ввода">Очистить</button>
+      </div>
+
+      <label for="dst" class="field-label">Результат транслитерации</label>
+      <textarea id="dst" class="field" rows="4" placeholder="Здесь появится результат…" readonly></textarea>
+
+      <div class="actions">
+        <button id="convertBtn" class="btn btn-primary" type="button">Перевести</button>
+        <button id="copyBtn" class="btn btn-secondary" type="button">В буфер обмена</button>
+      </div>
+    </section>
+
+    <section class="settings">
+      <h2>Настройки</h2>
+
+      <div class="setting">
+        <div class="setting-title">1. Регистр букв</div>
+        <div class="setting-options" role="group" aria-label="Регистр">
+          <label><input type="radio" name="case" value="lower" checked> нижний</label>
+          <label><input type="radio" name="case" value="original"> первоначальный</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">2. Разделение слов</div>
+        <div class="setting-options" role="group" aria-label="Разделитель слов">
+          <label><input type="radio" name="sep" value="-" checked> дефис</label>
+          <label><input type="radio" name="sep" value="_"> подчёркивание</label>
+          <label><input type="radio" name="sep" value=" "> пробел</label>
+          <label><input type="radio" name="sep" value="."> точка</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">3. Транслитерация буквы «ё»</div>
+        <div class="setting-options" role="group" aria-label="ё">
+          <label><input type="radio" name="yo" value="yo" checked> yo</label>
+          <label><input type="radio" name="yo" value="e"> e</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">4. Транслитерация буквы «й»</div>
+        <div class="setting-options" role="group" aria-label="й">
+          <label><input type="radio" name="iy" value="j" checked> j</label>
+          <label><input type="radio" name="iy" value="y"> y</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">5. Транслитерация буквы «ц»</div>
+        <div class="setting-options" role="group" aria-label="ц">
+          <label><input type="radio" name="ts" value="c" checked> c</label>
+          <label><input type="radio" name="ts" value="ts"> ts</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">6. Транслитерация буквы «щ»</div>
+        <div class="setting-options" role="group" aria-label="щ">
+          <label><input type="radio" name="shch" value="shch" checked> shch</label>
+          <label><input type="radio" name="shch" value="sch"> sch</label>
+          <label><input type="radio" name="shch" value="shh"> shh</label>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-title">7. Транслитерация буквы «э»</div>
+        <div class="setting-options" role="group" aria-label="э">
+          <label><input type="radio" name="eh" value="eh" checked> eh</label>
+          <label><input type="radio" name="eh" value="e"> e</label>
+        </div>
+      </div>
+
+      <details class="hint">
+        <summary>Как работает «очистка» для ЧПУ</summary>
+        <p>Мы удаляем все неалфавитно-цифровые символы (кроме выбранного разделителя), приводим повторяющиеся разделители к одному и обрезаем их по краям. Это помогает формировать аккуратные и понятные URL-адреса.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>©<span id="year"></span>, Владимир Моденов. Для связи: <a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,119 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="vladimir modenov, resume, cv">
-    <meta name="description" content="Резюме Владимира Моденова">
-    <link rel="stylesheet" href="../css/style__resume.css">
-    <title>Резюме Владимира Моденова / Vladimir Modenov Resume</title>
+  <!--
+    Портфолио / визитка Владимира Моденова
+    Файл: /resume/index.html
+    Цели: минималистичный дизайн, быстрый рендер, качественные SEO и социальные превью.
+    Примечание: код максимально простой, без сборок и внешних зависимостей, кроме Google Fonts.
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Заголовок и описание для SEO -->
+  <title>Владимир Моденов — визитка: мастер печатей и штампов, блогер, разработчик</title>
+  <meta name="description" content="Официальная визитка Владимира Моденова: мастер по изготовлению печатей и штампов с 2013 года. Soft/Hard skills, курсы и сертификаты, контакты, ссылки на проекты." />
+  <link rel="canonical" href="https://modenov.github.io/resume/" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Open Graph (превью для соцсетей) -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="Владимир Моденов — визитка" />
+  <meta property="og:description" content="Мастер по изготовлению печатей и штампов. Soft/Hard skills, сертификаты и контакты." />
+  <meta property="og:url" content="https://modenov.github.io/resume/" />
+  <!-- Укажите реальный путь к фото ниже -->
+  <meta property="og:image" content="https://modenov.github.io/resume/photo-1024x682.jpg" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="682" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Владимир Моденов — визитка" />
+  <meta name="twitter:description" content="Мастер по изготовлению печатей и штампов. Навыки, сертификаты, контакты." />
+  <meta name="twitter:image" content="https://modenov.github.io/resume/photo-1024x682.jpg" />
+
+  <!-- Структурированные данные (JSON-LD). Помогают поисковикам понять страницу. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Владимир Моденов",
+    "image": "https://modenov.github.io/resume/photo-1024x682.jpg",
+    "url": "https://modenov.github.io/resume/",
+    "jobTitle": "Мастер по изготовлению печатей и штампов",
+    "knowsAbout": [
+      "SMM", "маркетинг", "веб-разработка", "аудио- и видеопродакшн", "электронная музыка"
+    ],
+    "sameAs": [
+      "https://smolp.ru/",
+      "https://blog.smolp.ru/",
+      "https://modenov.github.io/"
+    ],
+    "telephone": "+7-904-364-66-21",
+    "email": "mailto:hello@smolp.ru",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "RU"
+    }
+  }
+  </script>
+
+  <!-- Preconnect/Font: Roboto (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon/иконки (опционально замените путями на свои файлы) -->
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <script src="/js/yandex_counter.js"></script>
+  <!-- Базовые стили: минимализм, белый фон, читабельная типографика -->
+  <style>
+    :root {
+      --text: #0a0a0a;
+      --muted: #6b7280; /* серый для второстепенного текста */
+      --link: #1f6feb;
+      --bg: #ffffff;
+      --card: #f8fafc; /* очень светлая подложка */
+      --maxw: 880px;   /* ограничение ширины контента */
+    }
+    html, body { height: 100%; }
+    html { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 32px 16px 64px; }
+
+    header { margin-bottom: 28px; }
+    header h1 {
+      margin: 0 0 8px 0;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+      font-size: clamp(24px, 3.2vw, 34px);
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* Фото: сохраняем пропорции 1024×682, адаптивная ширина, мягкая тень */
+    .photo {
+      display: block;
+      width: 100%;
+      max-width: 1024px; /* фактическая ширина фото */
+      aspect-ratio: 1024 / 682; /* помогает браузеру зарезервировать место */
+      height: auto;
+      border-radius: 10px;
+      background: #e5e7eb; /* светлый плейсхолдер до загрузки */
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+
+    .figure { margin: 0 0 28px; }
+    .figure figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
+
+    section { margin: 28px 0; padding: 20px; background: var(--card); border-radius: 12px; }
+    section h2 { margin: 0 0 12px; font-size: 20px; }
+
+    ul { margin: 0; padding-left: 20px; }
+    li { margin: 6px 0; }
+
+    a { color: var(--link); text-underline-offset: 3px; }
+    a:hover { text-decoration-thickness: 2px; }
+
+    .meta { margin-top: 24px; color: var(--muted); font-size: 14px; }
+
+    footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; color: var(--muted); font-size: 14px; }
+
+    /* Печать: убрать фон-карточки, экономный стиль */
+    @media print {
+      section { background: transparent; padding: 0; }
+      .wrap { padding: 0; }
+      a { color: inherit; text-decoration: underline; }
+    }
+  </style>
 </head>
 <body>
+  <main class="wrap" itemScope itemType="https://schema.org/Person">
+    <header>
+      <h1 itemProp="name">Владимир Моденов — визитка</h1>
+      <p>Мастер по изготовлению печатей и штампов, блогер, разработчик.</p>
+    </header>
 
-<div class="container">
-    <div class="info">
-        <img src="../images/avatar.jpg" alt="Владимир Моденов" class="avatar">
-        <div class="info-text">
-            <h1>Владимир Моденов</h1>
-            <p>Основатель смоленской штемпельной типографии «Смоленские печатники» — работаю в типографском бизнесе с
-                2016 года.</p>
-            <br>
-            <p>Также увлекаюсь написанием электронной музыки — выпускаю треки под псевдонимом Tatuuma.</p>
-            <h4>Социальные сети:</h4>
-            <a href="https://t.me/vmodenov" target="_blank">Telegram</a>
-            |
-            <a href="https://www.instagram.com/tatuumamusic/" target="_blank">Instagram</a>
-            |
-            <a href="https://x.com/Modenov" target="_blank">Twitter</a>
-            |
-            <a href="https://vk.com/vmodenov" target="_blank">VK</a>
-        </div>
-    </div>
-    <br>
+    <!-- Фото 1024×682. Замените src на реальный путь. -->
+    <figure class="figure">
+      <img
+        src="./photo-1024x682.jpg"
+        width="1024" height="682"
+        alt="Портрет Владимира Моденова"
+        class="photo"
+        loading="lazy"
+        decoding="async"
+        itemProp="image"
+      />
+      <!-- Если подпись не нужна, можно удалить figcaption -->
+      <!-- <figcaption>Подпись к фотографии (опционально)</figcaption> -->
+    </figure>
 
-    <div class="card">
-        <h2>Мои проекты:</h2>
-        <ul class="list">
-            <li><a href="https://smolp.ru" target="_blank">Сайт «Смоленских печатников»</a></li>
-            <li><a href="https://tatuuma.ru" target="_blank">Сайт с моей музыкой</a></li>
-            <li><a href="https://modenov.ru/blog/" target="_blank">Личный блог</a></li>
-            <li><a href="https://blog.smolp.ru" target="_blank">Блог Смоленских печатников</a></li>
-        </ul>
-    </div>
+    <section aria-labelledby="work-title">
+      <h2 id="work-title">Работаю мастером по изготовлению печатей и штампов:</h2>
+      <ul>
+        <li>С 2013 по 2015 год — как наёмный сотрудник;</li>
+        <li>С 2016 года по настоящее время — в собственном бизнесе.</li>
+      </ul>
+    </section>
 
-    <div class="card">
-        <h2>Опыт работы:</h2>
+    <section aria-labelledby="soft-title">
+      <h2 id="soft-title">Soft Skills:</h2>
+      <ul>
+        <li>Коммуникабельность и умение общаться с людьми;</li>
+        <li>Внимание и концентрация;</li>
+        <li>Способность мыслить критически;</li>
+        <li>Умение брать на себя ответственность;</li>
+        <li>Логика;</li>
+        <li>Навыки общения и работа в команде;</li>
+        <li>Творческое мышление.</li>
+      </ul>
+    </section>
 
-        <table class="table">
-            <tbody>
-            <tr>
-                <td>Навоийский комбинат</td>
-                <td>Оператор ПК</td>
-                <td>2007—2012</td>
-            </tr>
-            <tr>
-                <td>Гражданский пожарный надзор</td>
-                <td>Мастер-полиграфист</td>
-                <td>2012—2016</td>
-            </tr>
-            <tr>
-                <td>Смоленские печатники</td>
-                <td>Директор</td>
-                <td>2016—н.в.</td>
-            </tr>
-            </tbody>
-        </table>
+    <section aria-labelledby="hard-title">
+      <h2 id="hard-title">Hard Skills:</h2>
+      <ul>
+        <li>Работа в операционных системах: macOS, Unix/Linux;</li>
+        <li>В офисных пакетах: MS Office, Google Workspace, Apple iWorks, Dropbox Paper, Box Notes, Libre Office, WPS Office, ABBYY FineReader;</li>
+        <li>В векторных и растровых графических пакетах: Adobe Creative Cloud, Affinity (Photo, Designer, Publisher), CorelDRAW, GIMP, Inkscape;</li>
+        <li>Имеются навыки в веб-разработке, программировании на языках Delphi (Object Pascal), C#, JavaScript, Python;</li>
+        <li>Имеется богатый опыт в видео- и аудиопродакшне;</li>
+        <li>Веду блоги и социальные сети — умею писать большие тексты, разбираюсь в современных медиа, маркетинге, SMM и базовом CEO-продвижении;</li>
+        <li>В целом привык работать с огромным количеством данных и умело ими оперировать.</li>
+      </ul>
+    </section>
 
-        <p>Больше информации можно найти на моей странице в <a href="https://linkedin.com/in/modenov" target="_blank">LinkedIn</a>.
-        </p>
+    <section aria-labelledby="edu-title">
+      <h2 id="edu-title">Курсы и сертификаты:</h2>
+      <p>
+        <a href="https://modenov.github.io/sertificates/index.html" rel="noopener" target="_blank">Здесь можно посмотреть</a>
+        пройденные мной курсы, обучения и прослушанные лекции.
+      </p>
+    </section>
 
-    </div>
+    <section aria-labelledby="contacts-title">
+      <h2 id="contacts-title">Контакты:</h2>
+      <ul>
+        <li>Телефон/WhatsApp — <a href="tel:+79043646621" itemProp="telephone">8 (904) 364-66-21</a>;</li>
+        <li>Почта — <a href="mailto:hello@smolp.ru" itemProp="email">hello@smolp.ru</a>;</li>
+        <li>Сайт «Смоленских печатников» — <a href="https://smolp.ru/" target="_blank" rel="noopener">https://smolp.ru</a>;</li>
+        <li>Блог «Смоленских печатников» — <a href="https://blog.smolp.ru/" target="_blank" rel="noopener">https://blog.smolp.ru</a></li>
+      </ul>
+    </section>
 
-    <div class="card">
-        <h2>Материалы:</h2>
+    <p class="meta" aria-label="Последнее обновление">Последнее обновление страницы: 3 сентября 2025 года в 22:28.</p>
 
-        <ul class="list">
-            <li>
-                <a href="https://github.com/modenov" target="_blank">GitHub</a>
-            </li>
-            <li>
-                <a href="https://modenov.ru/gallery/certificates.html" target="_blank">Сертификаты</a>
-            </li>
-        </ul>
-    </div>
+    <footer>
+      © Владимир Моденов. Этот сайт размещён на GitHub Pages.
+    </footer>
+  </main>
 
-    <div class="card bg-red">
-        <form action="/" class="form">
-            <h2>Связь со мной:</h2>
-            <br>
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label for="name">Ваше имя:</label>
-                    <input type="text" id="name" placeholder="Введите имя">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Ваш email:</label>
-                    <input type="email" id="email" placeholder="Введите email">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="message">Ваше сообщение:</label>
-                <textarea id="message" cols="20" rows="5" placeholder="Введите сообщение"></textarea>
-            </div>
-            <br>
-            <input class="btn" type="submit" value="Отправить">
-        </form>
-        <br>
-    </div>
-    <div class="footer">
-        <p>© Владимир Моденов, сайт-визитка</p>
-        <p>Последнее обновление — 26 августа 2024 г., 00:53</p>
-    </div>
-
-</div>
+  <!-- Небольшой JS не обязателен; оставлен пустым на будущее. -->
+  <script>
+    // Здесь можно добавить мелкие улучшения UX при необходимости.
+  </script>
 </body>
 </html>

@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Сертификаты Владимира Моденова</title>
+    <meta name="description" content="Галерея учебных сертификатов Владимира Моденова: курсы, навыки и достижения." />
+    <style>
+      /*
+        Минималистичная, строгая стилистика.
+        Без сторонних библиотек. Только HTML+CSS+JS.
+      */
+
+      :root {
+        --bg: #0b0c0e;         /* очень тёмный фон */
+        --panel: #121418;      /* карточки и шапка */
+        --text: #e7e9ee;       /* основной текст */
+        --muted: #9aa3b2;      /* вторичный текст */
+        --accent: #7aa2ff;     /* акцентные элементы */
+        --grid-gap: 1rem;      /* отступы в сетке */
+        --radius: 16px;        /* скругления */
+        --maxw: 1200px;        /* максимальная ширина контента */
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(1200px 800px at 80% -10%, #1a1f2a 0%, var(--bg) 40%) no-repeat, var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      header {
+        position: sticky; top: 0; z-index: 10;
+        backdrop-filter: blur(8px);
+        background: color-mix(in oklab, var(--panel) 85%, transparent);
+        border-bottom: 1px solid #1f2330;
+      }
+
+      .wrap { max-width: var(--maxw); margin: 0 auto; padding: 1.25rem; }
+
+      h1 { font-size: clamp(1.6rem, 2.4vw + 1rem, 2.6rem); margin: 0; letter-spacing: 0.2px; }
+      p.lead { margin: .25rem 0 0; color: var(--muted); }
+
+      .toolbar { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
+      .search {
+        flex: 1 1 260px; display: flex; align-items: center; gap: .5rem;
+        background: #0e1116; border: 1px solid #1f2330; border-radius: 999px; padding: .5rem .9rem;
+      }
+      .search input {
+        background: transparent; border: 0; outline: none; color: var(--text); width: 100%;
+        font-size: .95rem;
+      }
+      .hint { color: var(--muted); font-size: .9rem; }
+
+      main { padding-block: 1rem 2.5rem; }
+
+      /* Сетка галереи */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--grid-gap);
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid #1f2330;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 6px 20px rgba(0,0,0,0.45);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      }
+      .card:hover { transform: translateY(-2px); border-color: #2a3144; box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
+
+      .thumb {
+        /* Контейнер для миниатюры: сохраняем чистые поля вокруг сертификата */
+        aspect-ratio: 4 / 3;              /* разумное соотношение сторон по умолчанию */
+        background: #0d1015;
+        display: grid; place-items: center;
+      }
+      .thumb img {
+        max-width: 100%; max-height: 100%; object-fit: contain; display: block;
+        image-rendering: auto;
+      }
+
+      .meta { padding: .75rem 1rem; border-top: 1px solid #1f2330; }
+      .meta .name { font-weight: 600; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .meta .size { color: var(--muted); font-size: .82rem; }
+
+      /* Лайтбокс на <dialog> */
+      dialog#lightbox {
+        border: 0; padding: 0; margin: 0; background: transparent;
+        max-width: none; max-height: none;
+        width: 100vw; height: 100vh;
+      }
+      dialog#lightbox::backdrop {
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(2px);
+      }
+      .lightbox-inner {
+        position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto; gap: .5rem;
+      }
+      .lb-top, .lb-bottom {
+        display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .75rem 1rem;
+      }
+      .lb-top { color: var(--muted); }
+      .lb-canvas { position: relative; display: grid; place-items: center; padding: .5rem; }
+      .lb-canvas img { max-width: 96vw; max-height: 85vh; object-fit: contain; background: #0b0c0e; border-radius: 8px; }
+      .chip { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .7rem; background: #0e1116; border: 1px solid #262c3a; border-radius: 999px; font-size: .85rem; }
+      .btn {
+        border: 1px solid #2a3144; background: #111420; color: var(--text); padding: .5rem .9rem; border-radius: 10px; cursor: pointer;
+        font-size: .95rem; transition: background .15s ease, border-color .15s ease, transform .06s ease;
+      }
+      .btn:hover { background: #121a2a; border-color: #3a4661; }
+      .btn:active { transform: translateY(1px); }
+      .btn.ghost { background: transparent; border-color: #2a3144; color: var(--muted); }
+
+      footer { border-top: 1px solid #1f2330; background: #0e1116; }
+      footer .wrap { display: grid; gap: .25rem; color: var(--muted); font-size: .92rem; }
+      footer a { color: var(--accent); text-decoration: none; }
+      footer a:hover { text-decoration: underline; }
+
+      .empty, .error { color: var(--muted); text-align: center; padding: 3rem 1rem; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Сертификаты Владимира Моденова</h1>
+        <p class="lead">Все мои учебные сертификаты в одном месте. Кликните на карточку для просмотра в полном размере.</p>
+        <div class="toolbar">
+          <label class="search" title="Фильтр по названию файла (без расширения)">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"/></svg>
+            <input id="q" type="search" placeholder="Поиск по имени…" autocomplete="off" />
+          </label>
+          <span class="hint">Папка: <code>/sertificates/images/</code></span>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="gallery" class="grid" aria-live="polite"></section>
+      <div id="empty" class="empty" hidden>В папке пока нет изображений. Добавьте файлы в <code>/sertificates/images/</code>.</div>
+      <div id="error" class="error" hidden>Не удалось загрузить список изображений. Попробуйте позже или укажите резервный список файлов в коде.</div>
+    </main>
+
+    <!-- Лайтбокс на <dialog> -->
+    <dialog id="lightbox">
+      <div class="lightbox-inner">
+        <div class="lb-top">
+          <span class="chip" id="lbName">…</span>
+          <button class="btn ghost" id="lbCloseTop" aria-label="Закрыть">Закрыть ✕</button>
+        </div>
+        <div class="lb-canvas">
+          <img id="lbImg" alt="Просмотр сертификата" />
+        </div>
+        <div class="lb-bottom">
+          <span class="chip" id="lbInfo">Нажмите вне изображения или Esc для закрытия</span>
+          <div style="display:flex; gap:.5rem; align-items:center;">
+            <a class="btn" id="lbOpenRaw" href="#" target="_blank" rel="noopener">Открыть оригинал</a>
+            <button class="btn ghost" id="lbCloseBottom">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <footer>
+      <div class="wrap">
+        <div>© Владимир Моденов</div>
+        <div>© Все права на проекты и код защищены соответствующими лицензиями, 2016 — <span id="year">2025</span> г.</div>
+      </div>
+    </footer>
+
+    <script>
+      // === Параметры вашей репозитории на GitHub ===
+      // Репозиторий GitHub Pages у вас: modenov/modenov.github.io
+      const GH_OWNER = "modenov";
+      const GH_REPO  = "modenov.github.io";
+      const IMAGES_DIR = "sertificates/images"; // намеренно по-русски/как у вас
+
+      // Бэкап-список на случай блокировки API GitHub (можно вручную заполнить):
+      // Пример: ["2025-08 Udemy-HTML-CSS.webp", "Yandex_Practicum_JS.png"]
+      const FALLBACK_IMAGES = [
+        // Добавьте имена файлов вручную, если потребуется
+      ];
+
+      // === DOM-ссылки ===
+      const elGallery = document.getElementById('gallery');
+      const elEmpty   = document.getElementById('empty');
+      const elError   = document.getElementById('error');
+      const elSearch  = document.getElementById('q');
+
+      const lightbox = document.getElementById('lightbox');
+      const lbImg    = document.getElementById('lbImg');
+      const lbName   = document.getElementById('lbName');
+      const lbInfo   = document.getElementById('lbInfo');
+      const lbOpenRaw= document.getElementById('lbOpenRaw');
+      const lbCloseTop = document.getElementById('lbCloseTop');
+      const lbCloseBottom = document.getElementById('lbCloseBottom');
+
+      // Текущий домен (для формирования прямых ссылок на изображения из pages)
+      const ORIGIN = location.origin; // например, https://modenov.github.io
+
+      // Утилита: преобразуем имя файла в аккуратную подпись
+      function prettifyName(filename) {
+        return filename
+          .replace(/\.[^.]+$/,'')          // убрать расширение
+          .replace(/[._-]+/g, ' ')          // подчёрки/тире в пробелы
+          .replace(/\s+/g, ' ')            // схлопнуть пробелы
+          .trim();
+      }
+
+      // Создание одной карточки
+      function createCard(fileName, sizeBytes) {
+        const url = `${ORIGIN}/${IMAGES_DIR}/${encodeURIComponent(fileName)}`;
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.dataset.name = prettifyName(fileName).toLowerCase();
+
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = prettifyName(fileName);
+        img.src = url; // можно заменить на превью, если сделаете отдельные миниатюры
+
+        thumb.appendChild(img);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = prettifyName(fileName);
+
+        const size = document.createElement('div');
+        size.className = 'size';
+        if (typeof sizeBytes === 'number') {
+          const kb = sizeBytes / 1024;
+          const pretty = kb > 1024 ? (kb / 1024).toFixed(2) + ' МБ' : kb.toFixed(0) + ' КБ';
+          size.textContent = pretty;
+        } else {
+          size.textContent = '';
+        }
+
+        meta.appendChild(name);
+        meta.appendChild(size);
+
+        card.appendChild(thumb);
+        card.appendChild(meta);
+
+        // Клик для открытия в лайтбоксе
+        card.addEventListener('click', () => openLightbox(url, prettifyName(fileName)));
+
+        return card;
+      }
+
+      // Лайтбокс
+      function openLightbox(url, label) {
+        lbImg.src = url;
+        lbImg.alt = label;
+        lbName.textContent = label;
+        lbOpenRaw.href = url;
+        if (!lightbox.open) lightbox.showModal();
+      }
+      function closeLightbox() { lightbox.close(); lbImg.src = ''; }
+
+      lightbox.addEventListener('click', (e) => {
+        // клик по фону (вне изображения) — закрыть
+        const rect = lbImg.getBoundingClientRect();
+        const inside =
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top  && e.clientY <= rect.bottom;
+        if (!inside) closeLightbox();
+      });
+      lbCloseTop.addEventListener('click', closeLightbox);
+      lbCloseBottom.addEventListener('click', closeLightbox);
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.open) closeLightbox(); });
+
+      // Фильтр по поиску
+      elSearch.addEventListener('input', () => {
+        const q = elSearch.value.trim().toLowerCase();
+        for (const card of elGallery.children) {
+          const hit = !q || card.dataset.name.includes(q);
+          card.style.display = hit ? '' : 'none';
+        }
+      });
+
+      // Загрузка списка файлов с GitHub API
+      async function loadImages() {
+        const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${IMAGES_DIR}`;
+        try {
+          const res = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          // фильтруем только изображения
+          const images = data
+            .filter(item => item.type === 'file' && /\.(png|jpe?g|webp|gif|avif)$/i.test(item.name))
+            .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+
+          if (images.length === 0) { elEmpty.hidden = false; return; }
+
+          const frag = document.createDocumentFragment();
+          for (const img of images) {
+            frag.appendChild(createCard(img.name, img.size));
+          }
+          elGallery.appendChild(frag);
+        } catch (err) {
+          console.warn('GitHub API fallback:', err);
+          if (FALLBACK_IMAGES.length > 0) {
+            const frag = document.createDocumentFragment();
+            for (const name of FALLBACK_IMAGES) frag.appendChild(createCard(name));
+            elGallery.appendChild(frag);
+          } else {
+            elError.hidden = false;
+          }
+        }
+      }
+
+      // Текущий год в футере
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Старт
+      loadImages();
+    </script>
+  </body>
+</html>

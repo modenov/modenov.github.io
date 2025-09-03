@@ -1,0 +1,597 @@
+html {
+    overflow-x: initial !important;
+}
+
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --select-text-bg-color: #B5D6FC;
+    --select-text-font-color: auto;
+    --monospace: "Lucida Console", Consolas, "Courier", monospace;
+    --control-text-color: #777;
+    --side-bar-bg-color: #f6f8fa;
+}
+
+html {
+    font-size: 14px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    height: auto;
+    bottom: 0px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    font-size: 1rem;
+    line-height: 1.42857;
+    overflow-x: hidden;
+    background: inherit;
+    tab-size: 4;
+    font-family: "SF UI Text", -apple-system, -apple-system-body, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: #24292e;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: unset;
+}
+
+iframe {
+    margin: auto;
+    max-width: 100%;
+    width: 100%;
+    border: none;
+}
+
+a.url {
+    word-break: break-all;
+}
+
+a:active, a:hover {
+    outline: 0px;
+}
+
+a {
+    cursor: pointer;
+    color: #4183c4;
+}
+
+.in-text-selection, ::selection {
+    text-shadow: none;
+    background: var(--select-text-bg-color);
+    color: var(--select-text-font-color);
+}
+
+#write {
+    margin: 0px auto;
+    height: auto;
+    width: inherit;
+    word-break: normal;
+    overflow-wrap: break-word;
+    position: relative;
+    white-space: normal;
+    overflow-x: visible;
+    padding-top: 40px;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 30px 100px;
+}
+
+#write.first-line-indent p {
+    text-indent: 2em;
+}
+
+#write.first-line-indent li p, #write.first-line-indent p * {
+    text-indent: 0px;
+}
+
+#write.first-line-indent li {
+    margin-left: 2em;
+}
+
+.for-image #write {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+body.typora-export {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.typora-export .footnote-line, .typora-export li, .typora-export p {
+    white-space: pre-wrap;
+}
+
+#write > ol:first-child,
+#write > ul:first-child {
+    margin-top: 30px;
+}
+
+body > :first-child {
+    margin-top: 0 !important;
+}
+
+body > :last-child {
+    margin-bottom: 0 !important;
+}
+
+@media screen and (max-width: 500px) {
+    body.typora-export {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #write {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .CodeMirror-sizer {
+        margin-left: 0px !important;
+    }
+
+    .CodeMirror-gutters {
+        display: none !important;
+    }
+}
+
+#write li > figure:last-child {
+    margin-bottom: 0.5rem;
+}
+
+#write ol, #write ul {
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+button, input, select, textarea {
+    color: inherit;
+    font: inherit;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    line-height: normal;
+    padding: 0px;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre {
+    width: inherit;
+}
+
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p {
+    position: relative;
+}
+
+p {
+    line-height: inherit;
+    orphans: 4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    break-after: avoid-page;
+    break-inside: avoid;
+    orphans: 4;
+    position: relative;
+    margin-top: 1.8rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    cursor: text;
+    color: #142331;
+    font-weight: 600;
+}
+
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+
+h1 code,
+h1 tt,
+h2 code,
+h2 tt,
+h3 code,
+h3 tt,
+h4 code,
+h4 tt,
+h5 code,
+h5 tt,
+h6 code,
+h6 tt {
+    font-size: inherit;
+}
+
+h1 {
+    font-size: 2rem;
+    text-align: center;
+    padding-bottom: .3em;
+    font-size: 2.25em;
+    line-height: 1.2;
+    margin: 1em auto 1.2em;
+    font-weight: 400;
+}
+
+h1:after {
+    border-bottom: 2px dashed #afec9e;
+    content: '';
+    width: 100px;
+    display: block;
+    margin: .2em auto 0;
+    height: 2px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-size: 1.75em;
+    padding-left: 9px;
+    line-height: 1.4;
+    border-left: 6px solid #cce5ff;
+}
+
+h3 {
+    font-size: 1.6rem;
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+
+h3:before {
+    border-radius: 50%;
+    background-color: #9ed0ff;
+    content: '';
+    width: 6px;
+    display: inline-block;
+    height: 6px;
+    vertical-align: middle;
+    margin-bottom: .18em;
+    margin-right: 8px;
+}
+
+#write > h3.md-focus:before,
+#write > h4.md-focus:before {
+    background-color: transparent;
+    width: auto;
+    height: auto;
+}
+
+h4 {
+    font-size: 1.4rem;
+    font-size: 1.25em;
+}
+
+h4:before {
+    background-color: #9ed0ff;
+    content: '';
+    width: 6px;
+    display: inline-block;
+    height: 2px;
+    vertical-align: middle;
+    margin-bottom: .18em;
+    margin-right: 8px;
+}
+
+h5 {
+    font-size: 1.2rem;
+    font-size: 1em;
+}
+
+h6 {
+    font-size: 1rem;
+    font-size: 1em;
+    color: #777;
+}
+
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+blockquote,
+dl,
+ol,
+p,
+table,
+ul {
+    margin: .8em 0;
+}
+
+li > ol,
+li > ul {
+    margin: 0;
+}
+
+ol,
+ul {
+    padding-left: 30px;
+}
+
+ol:first-child,
+ul:first-child {
+    margin-top: 0;
+}
+
+ol:last-child,
+ul:last-child {
+    margin-bottom: 0;
+}
+
+hr {
+    height: .25em;
+    padding: 0;
+    margin: 24px 0;
+    background-color: #e1e4e8;
+    border: 0;
+}
+
+a:first-child h1,
+a:first-child h2,
+a:first-child h3,
+a:first-child h4,
+a:first-child h5,
+a:first-child h6,
+body > h1:first-child,
+body > h1:first-child + h2,
+body > h2:first-child,
+body > h3:first-child,
+body > h4:first-child,
+body > h5:first-child,
+body > h6:first-child {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+h1 p,
+h2 p,
+h3 p,
+h4 p,
+h5 p,
+h6 p {
+    margin-top: 0;
+}
+
+li p.first {
+    display: inline-block;
+}
+
+blockquote {
+    margin: 1rem 0px;
+    border-left: 4px dotted #e5e8e8;
+    padding: 0 12px;
+    color: #444;
+    font-size: .9em;
+}
+
+blockquote blockquote {
+    padding-right: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0px;
+}
+
+blockquote > :first-child, li > :first-child {
+    margin-top: 0px;
+}
+
+.hidden {
+    display: none;
+}
+
+.md-blockmeta {
+    color: rgb(204, 204, 204);
+    font-weight: 700;
+    font-style: italic;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 100%;
+    overflow: auto;
+    break-inside: auto;
+    text-align: left;
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    break-inside: avoid;
+    break-after: auto;
+    border-top: 1px solid #dadfe6;
+    margin: 0;
+    padding: 0;
+}
+
+table.md-table tr:nth-child(2n) {
+    background-color: #fafbfc;
+}
+
+table tr td,
+table tr th {
+    border: 1px solid #dadfe6;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td:first-child,
+table tr th:first-child {
+    margin-top: 0;
+}
+
+table tr td:last-child,
+table tr th:last-child {
+    margin-bottom: 0;
+}
+
+table tr th {
+    border-bottom: 0px;
+    font-weight: 400;
+}
+
+table.md-table td {
+    min-width: 32px;
+}
+
+thead {
+    display: table-header-group;
+}
+
+figure {
+    overflow-x: auto;
+    margin: 1.2em 0px;
+    max-width: calc(100% + 16px);
+    padding: 0px;
+}
+
+figure > table {
+    margin: 0px !important;
+}
+
+code, pre, samp, tt {
+    font-family: var(--monospace);
+}
+
+.md-fences,
+code,
+tt {
+    font-size: 90%;
+    border-radius: 3px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+code,
+tt {
+    margin: 0 2px;
+    padding: 2px 4px;
+    background-color: #e2f0ff;
+    text-align: left;
+    vertical-align: initial;
+}
+
+.md-fences {
+    font-size: 0.9rem;
+    display: block;
+    break-inside: avoid;
+    text-align: left;
+    overflow: visible;
+    white-space: pre;
+    background: inherit;
+    position: relative !important;
+    background-color: #f6f8fa;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 12px 1em;
+}
+
+kbd {
+    margin: 0px 0.1em;
+    padding: 0.1em 0.6em;
+    font-size: 0.8em;
+    color: rgb(36, 39, 41);
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(173, 179, 185);
+    border-radius: 3px;
+    box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.md-comment {
+    color: rgb(162, 127, 3);
+    opacity: 0.8;
+    font-family: var(--monospace);
+}
+
+/* Additional styles and responsive design */
+@media screen and (max-width: 48em) {
+    .md-toc-h3 .md-toc-inner {
+        margin-left: 3.5em;
+    }
+
+    .md-toc-h4 .md-toc-inner {
+        margin-left: 5em;
+    }
+
+    .md-toc-h5 .md-toc-inner {
+        margin-left: 6.5em;
+    }
+
+    .md-toc-h6 .md-toc-inner {
+        margin-left: 8em;
+    }
+}
+
+@media print {
+    body, html {
+        border: 1px solid transparent;
+        height: 99%;
+        break-after: avoid;
+        break-before: avoid;
+        font-variant-ligatures: no-common-ligatures;
+        font-weight: 400;
+    }
+
+    #write {
+        margin-top: 0px;
+        padding-top: 0px;
+        border-color: transparent !important;
+    }
+
+    .typora-export * {
+        -webkit-print-color-adjust: exact;
+    }
+
+    html.blink-to-pdf {
+        font-size: 13px;
+    }
+
+    .typora-export #write {
+        padding-left: 32px;
+        padding-right: 32px;
+        padding-bottom: 0px;
+        break-after: avoid;
+    }
+
+    .typora-export #write::after {
+        height: 0px;
+    }
+
+    b,
+    strong {
+        font-weight: 600;
+    }
+
+    pre,
+    table {
+        page-break-inside: avoid;
+    }
+
+    pre {
+        word-wrap: break-word;
+    }
+}
+
+b,
+strong {
+    font-weight: 600;
+}
+
+.file-list-item-file-name {
+    font-weight: 500;
+}

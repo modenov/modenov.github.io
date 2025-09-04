@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Игра "Города" Владимира Моденова</title>
+  <meta name="description" content="Классическая игра в города на русском. Играйте против компьютера, набирайте очки и ставьте рекорды. Автор: Владимир Моденов." />
+  <meta name="keywords" content="игра города, игра в города, города на русском, моденов, Владимир Моденов, city game ru" />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://modenov.github.io/apps/city-game/" />
+  <meta property="og:title" content="Игра &quot;Города&quot; Владимира Моденова" />
+  <meta property="og:description" content="Классическая игра в города против компьютера. Счёт, рекорд, таймер, светлая/тёмная тема." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://modenov.github.io/apps/city-game/" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="header">
+      <h1>Игра «Города» Владимира Моденова</h1>
+      <p class="subtitle">Классическая игра в города на русском языке. Играйте против компьютера, ставьте рекорды.</p>
+    </header>
+
+    <section class="scoreboard">
+      <div class="score-card">
+        <div class="label">Счёт</div>
+        <div id="score" class="value">0</div>
+      </div>
+      <div class="score-card">
+        <div class="label">Рекорд</div>
+        <div id="highScore" class="value">0</div>
+      </div>
+      <div class="score-card">
+        <div class="label">Таймер</div>
+        <div id="timer" class="value">60</div>
+      </div>
+      <div class="score-card">
+        <div class="label">Нужная буква</div>
+        <div id="needLetter" class="value">—</div>
+      </div>
+    </section>
+
+    <section class="arena">
+      <div class="turn-box" id="computerMove">
+        <div class="turn-title">Ход компьютера:</div>
+        <div class="turn-city" id="computerCity">—</div>
+      </div>
+
+      <form id="form" class="input-row" autocomplete="off">
+        <input
+          id="cityInput"
+          class="city-input"
+          type="text"
+          inputmode="text"
+          placeholder="Введите город на нужную букву…"
+          aria-label="Поле ввода города"
+          required
+        />
+        <button type="submit" class="btn primary">Отправить</button>
+      </form>
+
+      <div class="controls">
+        <button id="newGameBtn" class="btn">Новая игра</button>
+        <button id="giveUpBtn" class="btn ghost">Сдаться</button>
+      </div>
+
+      <p id="message" class="message" aria-live="polite"></p>
+
+      <details class="rules">
+        <summary>Правила</summary>
+        <div class="rules-content">
+          <ol>
+            <li>Играют двое: вы и компьютер. Первый город называет компьютер.</li>
+            <li>Вы вводите город, начинающийся на последнюю букву города оппонента.
+              Если последняя буква — мягкий/твёрдый знак или «ы/й», используется предыдущая значимая буква.</li>
+            <li>Можно писать <strong>только города</strong> (по всему миру), <strong>на русском языке</strong>.</li>
+            <li>Нельзя повторять уже использованные города.</li>
+            <li>На ход даётся <strong>60 секунд</strong>. Не успели — победа компьютера.</li>
+            <li>За каждый верный город — <strong>1 очко</strong>. Рекорд сохраняется в браузере.</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="used">
+        <div class="used-title">Использованные города</div>
+        <div id="usedList" class="used-list"></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>© <span id="year"></span>, «Города» Моденова. Почта для связи: <a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+    </footer>
+  </main>
+
+  <script src="cities.js"></script>
+  <script src="app.js"></script>
+  <script src="/js/yandex_counter.js"></script>
+
+  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+</body>
+</html>

@@ -8,7 +8,7 @@
     .replace(/\s+/g, ' ')
     .trim();
 
-  const onlyRusLetters = (s) => /^[А-ЯЁа-яё][А-ЯЁа-яё\s\-]+$/.test(s);
+  const onlyRusLetters = (s) => /^[А-ЯЁа-яё][А-ЯЁа-яё\s\-()]+$/.test(s);
 
   const lettersOnly = (s) => (s || '').toLowerCase().replace(/[^а-яё]/g, '').replace(/ё/g,'е');
 
@@ -19,13 +19,15 @@
       const ch = s[i];
       if (!skip.has(ch)) return ch === 'ё' ? 'е' : ch;
     }
-    return ''; // fallback
+    return '';
   };
 
   const firstLetter = (word) => {
     const s = lettersOnly(word);
     return s[0] || '';
   };
+
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // ===== DOM =====
   const $ = (sel) => document.querySelector(sel);
@@ -42,8 +44,7 @@
   const giveUpBtn = $('#giveUpBtn');
 
   // ===== State =====
-  const DICT = (window.CITIES || []).slice(); // raw list for display
-  const dictNorm = new Set(DICT.map(normalize));
+  const DICT = (window.CITIES || []).slice();
   let used = new Set();
   let usedDisplay = [];
   let needLetter = '';
@@ -53,12 +54,18 @@
   let highScore = Number(localStorage.getItem('cityGameHighScore') || '0');
   highScoreEl.textContent = String(highScore);
 
+  // Online cache (localStorage)
+  const cacheKey = 'cityGameOnlineCacheV1';
+  const cache = (() => {
+    try { return JSON.parse(localStorage.getItem(cacheKey) || '{}'); } catch { return {}; }
+  })();
+  function saveCache() { try { localStorage.setItem(cacheKey, JSON.stringify(cache)); } catch {} }
+
   // Theme by local time: dark 21:00-07:00, light otherwise
   function applyThemeByLocalTime() {
     const hr = new Date().getHours();
     const theme = (hr >= 21 || hr < 7) ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', theme);
-    // Update meta theme-color
     const metaTC = document.querySelector('meta[name="theme-color"]');
     if (metaTC) metaTC.setAttribute('content', theme === 'dark' ? '#0b0f14' : '#ffffff');
   }
@@ -67,7 +74,123 @@
   // dynamic year
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // ===== Game Logic =====
+  // ===== Online validation (Wikidata primary, OSM fallback) =====
+
+  // Allowed instance-of (P31) items on Wikidata
+  const WD_ALLOWED = new Set([
+    'Q515',      // city
+    'Q3957',     // town
+    'Q1549591',  // metropolis
+    'Q532',      // village
+    'Q15284',    // urban-type settlement
+    'Q486972',   // human settlement (broad)
+    'Q1093829',  // municipality of Russia
+    'Q202435',   // rural locality
+    'Q1637706',  // urban settlement of Russia
+  ]);
+
+  async function fetchJson(url, {timeout=7000} = {}) {
+    const ctrl = new AbortController();
+    const id = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {signal: ctrl.signal, headers: {'Accept': 'application/json'}});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } finally {
+      clearTimeout(id);
+    }
+  }
+
+  function normEq(a, b) { return normalize(a) === normalize(b); }
+
+  function ruStrings(obj) {
+    const out = [];
+    if (!obj) return out;
+    if (obj.labels && obj.labels.ru) out.push(obj.labels.ru.value);
+    if (obj.aliases && obj.aliases.ru) out.push(...obj.aliases.ru.map(x => x.value));
+    if (obj.labels && obj.labels.uk) out.push(obj.labels.uk.value);
+    if (obj.aliases && obj.aliases.uk) out.push(...obj.aliases.uk.map(x => x.value));
+    return out;
+  }
+
+  async function wikidataValidate(name) {
+    const q = encodeURIComponent(name);
+    // 1) Search entity by Russian label
+    const searchUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${q}&language=ru&uselang=ru&type=item&limit=6&origin=*`;
+    const s = await fetchJson(searchUrl);
+    if (!s || !s.search || !s.search.length) return null;
+
+    // Prefer exact label/alias match in RU/UK
+    const candidates = s.search.filter(it => {
+      const all = [it.label, ...(it.aliases || [])];
+      return all.some(str => normEq(str, name));
+    });
+    const pool = (candidates.length ? candidates : s.search).slice(0, 4);
+
+    for (const it of pool) {
+      // 2) Load entity data
+      const entityUrl = `https://www.wikidata.org/wiki/Special:EntityData/${it.id}.json`;
+      const data = await fetchJson(entityUrl);
+      const entity = data && data.entities && (data.entities[it.id] || data.entities[it.id.toUpperCase()]);
+      if (!entity) continue;
+
+      // Check P31 (instance of)
+      const p31 = (entity.claims && entity.claims.P31) || [];
+      const ok = p31.some(claim => {
+        const v = claim.mainsnak && claim.mainsnak.datavalue && claim.mainsnak.datavalue.value;
+        const id = v && v.id;
+        return id && WD_ALLOWED.has(id);
+      });
+      if (!ok) continue;
+
+      // Finalize: return canonical Russian label if available
+      const ru = ruStrings(entity).find(str => str && str.trim().length > 0);
+      return { ok: true, display: ru || it.label || name };
+    }
+    return null;
+  }
+
+  async function nominatimValidate(name) {
+    const q = encodeURIComponent(name);
+    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=ru&q=${q}&limit=5`;
+    try {
+      const data = await fetchJson(url, {timeout: 7000});
+      if (!Array.isArray(data) || !data.length) return null;
+      // Accept place type city/town/village
+      const okTypes = new Set(['city','town','village','municipality','borough','suburb']);
+      for (const item of data) {
+        const t = (item.type || '').toLowerCase();
+        if (okTypes.has(t)) {
+          // Prefer display_name first token
+          const disp = (item.display_name || '').split(',')[0].trim();
+          // Ensure name is close
+          if (normalize(disp) === normalize(name) || normalize(item.name || '') === normalize(name)) {
+            return { ok: true, display: disp };
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function validateOnline(name) {
+    const n = normalize(name);
+    if (cache[n]) return cache[n]; // {ok:boolean, display?:string}
+
+    // Primary: Wikidata
+    let res = await wikidataValidate(name);
+    if (!res) {
+      // Fallback: Nominatim
+      res = await nominatimValidate(name);
+    }
+    cache[n] = res || { ok: false };
+    saveCache();
+    return cache[n];
+  }
+
+  // ===== Game UI =====
   function resetUI() {
     score = 0;
     scoreEl.textContent = '0';
@@ -122,7 +245,6 @@
       highScore = score;
       localStorage.setItem('cityGameHighScore', String(highScore));
       highScoreEl.textContent = String(highScore);
-      // gentle notice
       setTimeout(() => {
         messageEl.textContent = reason + ' Новый рекорд: ' + highScore + '!';
       }, 200);
@@ -134,7 +256,6 @@
   }
 
   function computerTurn(reqLetter) {
-    // pick a city that starts with reqLetter and is not used
     const candidates = [];
     for (const city of DICT) {
       const n = normalize(city);
@@ -156,8 +277,8 @@
   }
 
   function firstComputerCity() {
-    // computer starts randomly
-    const first = randomOf(DICT.filter(c => !used.has(normalize(c))));
+    const pool = DICT.filter(c => !used.has(normalize(c)));
+    const first = randomOf(pool.length ? pool : ['Москва','Париж','Лондон','Берлин']);
     pushUsed(first);
     computerCityEl.textContent = first;
     needLetter = lastSignificantLetter(first);
@@ -171,16 +292,13 @@
     input.focus();
   }
 
-  // Validate user input
-  function validateUserCity(raw) {
+  // ===== Validation (async) =====
+  async function validateUserCity(raw) {
     const trimmed = raw.trim();
     if (!onlyRusLetters(trimmed)) {
       return { ok:false, reason:'Пишите город русскими буквами.' };
     }
     const norm = normalize(trimmed);
-    if (!dictNorm.has(norm)) {
-      return { ok:false, reason:'Такого города нет в базе или он написан неверно.' };
-    }
     if (used.has(norm)) {
       return { ok:false, reason:'Этот город уже использован.' };
     }
@@ -190,41 +308,61 @@
     if (firstLetter(norm) !== needLetter) {
       return { ok:false, reason:`Город должен начинаться на букву «${needLetter.toUpperCase()}».` };
     }
-    return { ok:true, norm, display: DICT.find(c => normalize(c) === norm) || trimmed };
-  }
 
-  // Submit handler
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const value = input.value;
-    const res = validateUserCity(value);
-    if (!res.ok) {
-      input.classList.remove('success');
-      input.classList.add('error');
-      messageEl.textContent = res.reason;
-      setTimeout(() => input.classList.remove('error'), 600);
-      return;
+    // 1) Quick allow if present in local list (быстро, оффлайн)
+    if (DICT.some(c => normalize(c) === norm)) {
+      return { ok:true, norm, display: DICT.find(c => normalize(c) === norm) };
     }
 
-    // success
-    pushUsed(res.display);
-    score += 1;
-    scoreEl.textContent = String(score);
-    input.classList.remove('error');
-    input.classList.add('success');
-    messageEl.textContent = 'Отлично!';
-    setTimeout(() => input.classList.remove('success'), 600);
-    input.value = '';
+    // 2) Online validation
+    messageEl.textContent = 'Проверяем город по справочникам…';
+    const online = await validateOnline(trimmed);
+    if (online && online.ok) {
+      // Add to local dict for this session
+      DICT.push(online.display);
+      return { ok:true, norm: normalize(online.display), display: online.display };
+    }
+    return { ok:false, reason:'Такого города не найдено в авторитетных справочниках.' };
+  }
 
-    // Next: computer turn from last letter of user's city
-    stopTimer();
-    const nextLetter = lastSignificantLetter(res.display);
-    needLetter = nextLetter;
-    needLetterEl.textContent = needLetter.toUpperCase();
-    setTimeout(() => {
-      const ans = computerTurn(nextLetter);
-      if (!ans) return; // user already won
-    }, 180);
+  // ===== Handlers =====
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const value = input.value;
+    input.disabled = true;
+    try {
+      const res = await validateUserCity(value);
+      if (!res.ok) {
+        input.classList.remove('success');
+        input.classList.add('error');
+        messageEl.textContent = res.reason;
+        setTimeout(() => input.classList.remove('error'), 600);
+        return;
+      }
+
+      // success
+      pushUsed(res.display);
+      score += 1;
+      scoreEl.textContent = String(score);
+      input.classList.remove('error');
+      input.classList.add('success');
+      messageEl.textContent = 'Отлично!';
+      setTimeout(() => input.classList.remove('success'), 600);
+      input.value = '';
+
+      // Next: computer turn from last letter of user's city
+      stopTimer();
+      const nextLetter = lastSignificantLetter(res.display);
+      needLetter = nextLetter;
+      needLetterEl.textContent = needLetter.toUpperCase();
+      setTimeout(() => {
+        const ans = computerTurn(nextLetter);
+        if (!ans) return;
+      }, 180);
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
   });
 
   newGameBtn.addEventListener('click', () => startNewGame());

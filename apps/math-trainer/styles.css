@@ -1,0 +1,193 @@
+/* Базовая тема через CSS-переменные: легко переключать тёмный/светлый */
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #6b7280;
+  --card: #f8fafc;
+  --accent: #2563eb;
+  --accent-weak: #e0e7ff;
+  --ok: #16a34a;
+  --bad: #dc2626;
+  --btn-bg: #111111;
+  --btn-fg: #ffffff;
+  --btn-hover: #222222;
+  --shadow: 0 10px 20px rgba(0,0,0,.06), 0 2px 6px rgba(0,0,0,.08);
+}
+
+/* Тёмная тема: включаем классом body.dark ИЛИ через prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0d10;
+    --fg: #f1f5f9;
+    --muted: #94a3b8;
+    --card: #11161c;
+    --accent: #60a5fa;
+    --accent-weak: #1e293b;
+    --ok: #22c55e;
+    --bad: #f87171;
+    --btn-bg: #1f2937;
+    --btn-fg: #e5e7eb;
+    --btn-hover: #374151;
+    --shadow: 0 10px 20px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.45);
+  }
+}
+body.dark {
+  --bg: #0b0d10;
+  --fg: #f1f5f9;
+  --muted: #94a3b8;
+  --card: #11161c;
+  --accent: #60a5fa;
+  --accent-weak: #1e293b;
+  --ok: #22c55e;
+  --bad: #f87171;
+  --btn-bg: #1f2937;
+  --btn-fg: #e5e7eb;
+  --btn-hover: #374151;
+  --shadow: 0 10px 20px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.45);
+}
+
+/* Глобальные стили */
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+}
+
+.app-header {
+  max-width: 860px;
+  margin: 24px auto 12px;
+  padding: 0 16px;
+}
+.app-title {
+  margin: 0 0 12px 0;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.control-label { color: var(--muted); }
+.select {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: var(--card);
+  color: var(--fg);
+  box-shadow: var(--shadow);
+  outline: none;
+}
+.status {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--muted);
+}
+
+.card {
+  max-width: 860px;
+  margin: 12px auto 24px;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.question {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* Сетка для 4 вариантов (адаптивная) */
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (max-width: 520px) {
+  .options {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 16px;
+  transition: transform .08s ease, background .15s ease, box-shadow .15s ease, opacity .2s;
+  box-shadow: var(--shadow);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 500;
+}
+.btn:hover { transform: translateY(-1px); background: var(--btn-hover); }
+.btn:active { transform: translateY(0); }
+
+.btn.option {
+  background: #fff;
+  color: #111;
+}
+body.dark .btn.option {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+.btn.option:hover { background: var(--accent-weak); }
+.btn.option.correct { outline: 3px solid var(--ok); }
+.btn.option.wrong { outline: 3px solid var(--bad); opacity: .85; }
+.btn.option.hidden { visibility: hidden; }
+
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.ghost {
+  background: transparent;
+  color: var(--fg);
+  border: 1px dashed var(--muted);
+}
+
+.feedback {
+  font-weight: 700;
+  margin: 10px 0;
+}
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+
+.explanation {
+  background: rgba(0,0,0,.04);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--fg);
+}
+body.dark .explanation { background: rgba(255,255,255,.06); }
+
+.hint {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(99,102,241,.1);
+  color: var(--fg);
+}
+.hidden { display: none; }
+
+.timer { color: var(--muted); }
+
+.footer {
+  max-width: 860px;
+  margin: 0 auto 56px;
+  padding: 0 16px;
+  color: var(--muted);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }

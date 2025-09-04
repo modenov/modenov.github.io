@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Математический тренажёр Владимира Моденова</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Минималистичный матем-тренажёр: задачи 5–6 класса, 4 варианта ответов, уровни сложности, подсказки, разбор решения. Автор: Владимир Моденов." />
+  <meta name="keywords" content="математика, тренажёр, примеры, задачи, 5 класс, 6 класс, онлайн-тренажёр, Владимир Моденов" />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Математический тренажёр Владимира Моденова" />
+  <meta property="og:description" content="Лёгкие и средние задачи, 4 варианта ответов, подсказки, тёмная тема. Тренируйся где угодно." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://modenov.github.io/apps/math-trainer/" />
+  <!-- Если добавите картинку превью — поменяйте ссылку ниже -->
+  <meta property="og:image" content="https://modenov.github.io/apps/math-trainer/og.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Математический тренажёр Владимира Моденова" />
+  <meta name="twitter:description" content="Задачи 5–6 класса, варианты ответов, подсказки и разбор решений." />
+  <meta name="twitter:image" content="https://modenov.github.io/apps/math-trainer/og.png" />
+
+  <!-- Шрифт Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <script src="/js/yandex_counter.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">Математический тренажёр Владимира Моденова</h1>
+
+    <div class="controls">
+      <label for="difficulty" class="control-label">Сложность:</label>
+      <select id="difficulty" class="select">
+        <option value="easy">Лёгкий</option>
+        <option value="medium" selected>Средний</option>
+        <option value="hard">Сложный</option>
+      </select>
+
+      <button id="newTaskBtn" class="btn primary" aria-label="Следующая задача">Новая задача</button>
+    </div>
+
+    <div class="status">
+      <div>Заданий верно: <span id="score">0</span> из <span id="attempts">0</span></div>
+      <div id="timer" aria-live="polite" class="timer">Подсказка через: <span id="hintCountdown">—</span></div>
+    </div>
+  </header>
+
+  <main class="card" role="main">
+    <div id="question" class="question" aria-live="polite">Нажмите «Новая задача»</div>
+
+    <div id="options" class="options" role="group" aria-label="Варианты ответа">
+      <!-- Кнопки вариантов генерируются JS -->
+    </div>
+
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+    <div id="explanation" class="explanation"></div>
+
+    <div id="hintBar" class="hint hidden" aria-live="polite">
+      Похоже, задача задержалась. Нужна подсказка?
+      <button id="hintBtn" class="btn ghost">Убрать 2 неверных</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>© <span id="year"></span>, Владимир Моденов. Почта для связи: <a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+  </footer>
+
+  <script src="app.js" defer></script>
+
+  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  
+</body>
+</html>

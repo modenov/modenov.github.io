@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="description" content="Игра Морской бой Владимира Моденова — классический морской бой против компьютера. Расставляйте флот и сражайтесь на 10×10 поле. Тёмная тема включается автоматически ночью." />
+  <meta name="keywords" content="морской бой, игра, sea battle, battleship, Владимир Моденов, минимализм, тёмная тема" />
+  <link rel="canonical" href="https://modenov.github.io/apps/sea-battle/" />
+  <title>Игра Морской бой Владимира Моденова</title>
+
+  <!-- Roboto -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <script src="/js/yandex_counter.js"></script>
+</head>
+<body>
+  <!--
+    Игра Морской бой Владимира Моденова
+    Технологии: Чистые HTML + CSS + JS без сторонних библиотек.
+    Исходник снабжён комментариями, чтобы было проще разобраться.
+  -->
+  <div id="app" class="page">
+    <header class="header">
+      <h1>Игра Морской бой Владимира Моденова</h1>
+      <div class="header-actions">
+        <button id="rulesBtn" class="btn ghost">Правила</button>
+        <button id="themeBtn" class="btn ghost" title="Переключить тему вручную (вкл/выкл)">Тема</button>
+      </div>
+    </header>
+
+    <!-- Панель статуса и управление размещением флота -->
+    <section class="panel center">
+      <div class="status-line">
+        <span id="phaseBadge" class="badge">Подготовка: расставьте флот</span>
+        <span id="turnBadge" class="badge hidden">Ваш ход</span>
+      </div>
+
+      <div class="controls">
+        <div class="fleet-setup">
+          <div class="setup-row">
+            <label>Ориентация корабля:</label>
+            <button id="rotateBtn" class="btn">Горизонтально ⟷</button>
+          </div>
+          <div id="remaining" class="remaining"></div>
+          <div class="setup-row gap">
+            <button id="autoPlaceBtn" class="btn">Авто‑расстановка</button>
+            <button id="clearBtn" class="btn ghost">Очистить</button>
+            <button id="startBtn" class="btn primary" disabled>Начать игру</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Доски игры (поле компьютера меньшего размера сверху, поле игрока крупнее снизу) -->
+    <main class="boards">
+      <section class="board-wrap ai">
+        <h2 class="board-title">Поле компьютера</h2>
+        <div id="aiBoard" class="board board--small" aria-label="Поле компьютера"></div>
+        <p class="hint">Нажимайте на клетки, чтобы стрелять. Корабли противника скрыты.</p>
+      </section>
+
+      <section class="board-wrap player">
+        <h2 class="board-title">Ваше поле</h2>
+        <div id="playerBoard" class="board board--big" aria-label="Поле игрока"></div>
+        <p class="hint">Кликайте по клеткам во время подготовки, чтобы расставлять корабли. Повторный клик по стоящему кораблю — удалить его.</p>
+      </section>
+    </main>
+
+    <section class="panel center">
+      <div id="log" class="log" aria-live="polite" aria-atomic="false"></div>
+      <div class="setup-row gap">
+        <button id="newGameBtn" class="btn">Новая игра</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>© <span id="year"></span>, Морской бой Моденова. Почта для связи: <a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+      <div class="small">Проект: минималистичная реализация классического «Морского боя».</div>
+    </footer>
+  </div>
+
+  <!-- Модал с правилами -->
+  <div id="rulesModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle" aria-hidden="true">
+    <div class="modal__backdrop" data-close="true"></div>
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h3 id="rulesTitle">Правила «Морского боя»</h3>
+        <button class="icon-btn" id="rulesClose" title="Закрыть">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="rules">
+          <ol>
+            <li><strong>Поле:</strong> два квадрата 10×10 — ваше и компьютера.</li>
+            <li><strong>Флот (классический набор):</strong>
+              <ul>
+                <li>1 корабль на 4 клетки,</li>
+                <li>2 корабля на 3 клетки,</li>
+                <li>3 корабля на 2 клетки,</li>
+                <li>4 корабля на 1 клетку.</li>
+              </ul>
+              Корабли размещаются <u>по прямой</u> (горизонтально или вертикально) и <u>не касаются</u> друг друга даже по диагонали.
+            </li>
+            <li><strong>Подготовка:</strong> сначала расставьте свой флот кликами по нижнему полю. Кнопка «Горизонтально ⟷» меняет ориентацию. Есть «Авто‑расстановка» и «Очистить».</li>
+            <li><strong>Начало игры:</strong> после расстановки нажмите «Начать игру». Флот компьютера уже расставлен случайно и скрыт.</li>
+            <li><strong>Ходы:</strong> игрок и компьютер ходят по очереди, по одному выстрелу за ход. Нажмите на клетку верхнего поля, чтобы выстрелить.</li>
+            <li><strong>Обозначения:</strong> вода — 🟦, ваш корабль — 🚢, попадание — 💥, промах — ⚪, потопленный корабль — ☠️.</li>
+            <li><strong>Попадания и потопления:</strong> когда все клетки корабля подбиты, он считается потопленным (обновляется значок на ☠️).</li>
+            <li><strong>Победа:</strong> выигрывает тот, кто первым уничтожит весь флот противника.</li>
+            <li><strong>Честность игры:</strong> ИИ стреляет «по‑честному»: его флот всегда случайный, а точность сбалансирована — компьютеру запрещено «разносить» флот за неприлично малое число ходов.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn primary" id="rulesOk">Понятно</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+</body>
+</html>

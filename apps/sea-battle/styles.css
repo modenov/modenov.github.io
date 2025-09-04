@@ -1,0 +1,308 @@
+/* ============================
+   Стили: минимализм + акцент на удобочитаемость
+   Шрифт: Roboto
+   Тёмная тема включается автоматически ночью (локальное время)
+============================= */
+:root {
+  --bg: #ffffff;
+  --fg: #0f1720;
+  --muted: #5f6b7a;
+  --panel: #f5f7fa;
+  --border: #e5e9f0;
+  --primary: #0ea5e9;  /* голубой */
+  --primary-pressed: #0284c7;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.dark {
+  --bg: #0e131a;
+  --fg: #e5eef7;
+  --muted: #9fb2c9;
+  --panel: #141a23;
+  --border: #1f2a37;
+  --primary: #38bdf8;
+  --primary-pressed: #0ea5e9;
+  --shadow: 0 10px 36px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Roboto", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Layout */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* по вертикали */
+  gap: 20px;
+  padding: 24px;
+}
+
+.header {
+  width: min(1100px, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* по горизонтали */
+  gap: 16px;
+}
+h1 {
+  font-size: clamp(20px, 2.4vw, 32px);
+  margin: 0;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Panels */
+.panel {
+  width: min(1100px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.panel.center { text-align: center; }
+
+.status-line {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 14px;
+}
+.badge.hidden { display: none; }
+
+.controls {
+  display: flex;
+  justify-content: center;
+}
+
+.fleet-setup {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.setup-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.setup-row.gap { gap: 12px; }
+.remaining {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Boards */
+.boards {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: min(1100px, 100%);
+  gap: 18px;
+  align-items: center;
+  justify-items: center;
+}
+
+.board-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.board-title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--muted);
+}
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  background: transparent;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px dashed var(--border);
+}
+.board--small .cell {
+  width: clamp(26px, 3.2vw, 34px);
+  height: clamp(26px, 3.2vw, 34px);
+  font-size: clamp(16px, 3.1vw, 20px);
+}
+.board--big .cell {
+  width: clamp(36px, 4.8vw, 48px);
+  height: clamp(36px, 4.8vw, 48px);
+  font-size: clamp(22px, 5vw, 28px);
+}
+
+/* Cell buttons */
+.cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .08s ease, box-shadow .15s ease, border-color .15s;
+  box-shadow: 0 2px 10px rgba(0,0,0,.03);
+}
+.cell:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-color: var(--primary);
+}
+.cell:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+/* Buttons */
+.btn {
+  --btn-bg: var(--bg);
+  --btn-fg: var(--fg);
+  --btn-border: var(--border);
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .15s ease, background .2s, border-color .2s;
+  box-shadow: var(--shadow);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.btn.primary {
+  --btn-bg: var(--primary);
+  --btn-fg: white;
+  --btn-border: transparent;
+}
+.btn.primary:hover { filter: brightness(1.05); }
+.btn.primary:active { filter: brightness(.95); }
+.btn.ghost {
+  --btn-bg: transparent;
+  --btn-border: var(--border);
+  box-shadow: none;
+}
+
+/* Icon button */
+.icon-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.icon-btn:hover {
+  background: var(--panel);
+}
+
+/* Log */
+.log {
+  min-height: 28px;
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* Footer */
+.footer {
+  width: min(1100px, 100%);
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 8px 0 2px;
+  border-top: 1px solid var(--border);
+}
+.footer .small { font-size: 12px; opacity: .9; }
+
+/* Modal (кастомная реализация) */
+.modal { 
+  position: fixed; inset: 0; display: none; 
+}
+.modal[aria-hidden="false"] { display: block; }
+.modal__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.45);
+}
+.modal__dialog {
+  position: relative;
+  max-width: min(800px, 92vw);
+  margin: 8vh auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.modal__header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.modal__body {
+  padding: 10px 4px;
+  color: var(--fg);
+}
+.modal__footer {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+.rules {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.rules ol { padding-left: 16px; }
+.rules ul { margin: 6px 0; padding-left: 20px; }
+
+/* Адаптив */
+@media (min-width: 900px) {
+  .boards {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,92 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Generator by Vladimir Modenov</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <script src="/js/yandex_counter.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        input[type="number"] {
-            width: 60px;
-            padding: 5px;
-            margin-right: 10px;
-        }
-
-        button {
-            background-color: #E600BD;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-
-        #password-output {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Генератор паролей Владимира Моденова</title>
+  <meta name="description" content="Онлайн‑генератор, который создаёт сразу несколько надёжных паролей с гибкой конфигурацией и понятными подсказками. Автор: Владимир Моденов." />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Генератор паролей Владимира Моденова" />
+  <meta property="og:description" content="Создаёт сразу несколько надёжных паролей. Простые настройки, экспорт в .txt, подсветка символов и тёмная тема." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://modenov.github.io/apps/password-generator/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="/images/favicon.png">
 </head>
 <body>
-<div class="container">
-    <h1>Password Generator</h1>
-    <p>Hello, user! How long would you like your password to be?</p>
-    <label for="password-length"></label><input type="number" id="password-length" min="8" max="32" value="20">
-    <label>
-        <input type="checkbox" id="include-special-chars">
-        Include special characters (@#!)
-    </label>
-    <button onclick="generatePassword()">Generate password!</button>
-    <div id="password-output"></div>
-</div>
+  <header class="container">
+    <h1>Генератор паролей Владимира Моденова</h1>
+    <p class="subtitle">Создаёт сразу несколько паролей за один клик. Минималистичный интерфейс, понятные подсказки и экспорт в .txt.</p>
+  </header>
 
-<script>
-    function generatePassword() {
-        const passwordLength = document.getElementById("password-length").value;
-        const includeSpecialChars = document.getElementById("include-special-chars").checked;
+  <main class="container grid">
+    <!-- Левая панель: Настройки -->
+    <section class="panel" aria-label="Настройки генератора">
+      <form id="settingsForm">
+        <fieldset class="block">
+          <legend>Конфигурация</legend>
+          <div class="field">
+            <label for="length">Длина пароля: <span id="lengthValue" class="hint">16</span></label>
+            <input type="range" id="length" name="length" min="5" max="128" value="16" step="1" aria-describedby="lengthHelp">
+            <div id="lengthHelp" class="help">Оптимальная длина — <strong>16</strong> символов для баланса безопасности и удобства.</div>
+          </div>
 
-        let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        if (includeSpecialChars) {
-            charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
-        }
+          <div class="field">
+            <label for="count">Количество паролей за раз:</label>
+            <input type="number" id="count" name="count" min="1" max="50" value="10" inputmode="numeric" aria-describedby="countHelp">
+            <div id="countHelp" class="help">От <strong>1</strong> до <strong>50</strong>. По умолчанию — <strong>10</strong>.</div>
+          </div>
+        </fieldset>
 
-        let password = "";
-        for (let i = 0; i < passwordLength; i++) {
-            password += charset.charAt(Math.floor(Math.random() * charset.length));
-        }
+        <fieldset class="block">
+          <legend>Типы символов</legend>
+          <div class="checkbox">
+            <input type="checkbox" id="useUpper" checked>
+            <label for="useUpper">Большие буквы (A–Z)</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="useLower" checked>
+            <label for="useLower">Маленькие буквы (a–z)</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="useDigits" checked>
+            <label for="useDigits">Числа (0–9)</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="useSpecial" checked>
+            <label for="useSpecial">Специальные символы ($ % ! #)</label>
+          </div>
+          <div id="typesWarning" class="warning" role="alert" hidden>Нужно выбрать хотя бы один тип символов.</div>
+        </fieldset>
 
-        document.getElementById("password-output").textContent = "Your password is: " + password;
-    }
-</script>
+        <fieldset class="block">
+          <legend>Исключения</legend>
+          <div class="checkbox">
+            <input type="checkbox" id="excludeAmbiguous" checked>
+            <label for="excludeAmbiguous" title="Исключить похожие символы: O, o, 0, I, l, 1, |, S/5 и т. п.">Исключить неоднозначные символы</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="excludeComplex" checked>
+            <label for="excludeComplex" title="Исключить символы: &quot;, ~, `, ^">Исключить сложные символы</label>
+          </div>
+        </fieldset>
 
-<noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <fieldset class="block">
+          <legend>Дополнительно</legend>
+          <div class="checkbox">
+            <input type="checkbox" id="avoidRepeats" checked>
+            <label for="avoidRepeats" title="Одинаковые символы не будут повторяться внутри одного пароля">Избегать повторяющихся символов</label>
+          </div>
+          <div id="repeatsWarning" class="warning" role="alert" hidden>
+            Невозможно сгенерировать пароль заданной длины без повторов — уменьшите длину или включите больше типов.
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- Правая панель: Результаты -->
+    <section class="panel" aria-label="Сгенерированные пароли">
+      <div class="resultsHeader">
+        <h2>Список паролей</h2>
+        <div class="actions">
+          <button type="button" id="exportBtn" class="btn ghost" title="Скачать все пароли в .txt">Экспорт .txt</button>
+        </div>
+      </div>
+      <ol id="passwordList" class="passwordList" aria-live="polite" aria-busy="false">
+        <!-- Результаты появляются здесь -->
+      </ol>
+    </section>
+  </main>
+
+  <div class="container actionsBottom">
+    <button type="button" id="generateBtn" class="btn primary" disabled>Сгенерировать</button>
+  </div>
+
+  <footer class="container footer">
+    <div>Онлайн‑генератор паролей Владимира Моденова — <span id="year"></span></div>
+    <div><a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+  </footer>
+
+  <template id="passwordItemTemplate">
+    <li class="passwordItem">
+      <div class="pwWrap">
+        <code class="pw"></code>
+        <div class="strength" aria-live="polite">
+          <span class="label">—</span>
+          <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Надёжность пароля"></div>
+        </div>
+      </div>
+      <button type="button" class="iconBtn copyBtn" title="Копировать пароль" aria-label="Копировать пароль">
+        📋
+      </button>
+    </li>
+  </template>
+
+  <script src="app.js"></script>
+  <script src="/js/yandex_counter.js"></script>
+
+  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 </body>
 </html>

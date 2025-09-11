@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Инструмент для генерации случайных парольных фраз Владимира Моденова</title>
+  <meta name="description" content="Простой генератор парольных фраз из реальных английских слов. Гибкая настройка количества слов, разделителей и опций. Автор: Владимир Моденов." />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Инструмент для генерации случайных парольных фраз Владимира Моденова" />
+  <meta property="og:description" content="Создаёт запоминаемые парольные фразы из обычных английских слов. Поддержка заглавных букв, добавления числа и символа, экспорт истории." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://modenov.github.io/apps/passphrase-generator/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+  <header class="container">
+    <h1>Инструмент для генерации случайных парольных фраз</h1>
+    <p class="subtitle">
+      Этот инструмент создаёт <strong>запоминаемые</strong> парольные фразы из реальных английских слов.
+      Настраивайте количество слов, разделитель и дополнительные опции. Копируйте фразу в один клик или сохраняйте историю в .txt.
+    </p>
+  </header>
+
+  <main class="container">
+    <!-- Верхняя панель: Настройки -->
+    <section class="panel" aria-label="Настройки генератора">
+      <form id="settingsForm">
+        <div class="grid two">
+          <fieldset class="block">
+            <legend>Количество слов</legend>
+            <div class="field">
+              <label for="wordsCount">Сколько слов в парольной фразе</label>
+              <input type="number" id="wordsCount" min="3" max="20" value="6" inputmode="numeric" aria-describedby="wordsHelp" />
+              <div id="wordsHelp" class="help">
+                Значение должно быть между <strong>3</strong> и <strong>20</strong>. Для надёжной фразы используйте <strong>6 слов</strong> или больше.
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="block">
+            <legend>Опции парольной фразы</legend>
+            <div class="field">
+              <label for="separator">Разделитель слов</label>
+              <input type="text" id="separator" maxlength="3" value="-" aria-describedby="sepHelp" />
+              <div id="sepHelp" class="help">Если оставить пустым, слова будут идти слитно (без пробелов).</div>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="capitalize">
+              <label for="capitalize">С заглавной буквы</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="addDigit">
+              <label for="addDigit">Добавить цифру (0–9) к одному случайному слову</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="addSymbol">
+              <label for="addSymbol">Добавить символ (! % &amp; ^) к одному случайному слову</label>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+    </section>
+
+    <!-- Нижняя панель: Результат -->
+    <section class="panel" aria-label="Сгенерированная фраза">
+      <div class="resultHeader">
+        <h2>Парольная фраза</h2>
+        <div class="actions">
+          <button type="button" id="copyBtn" class="btn ghost" title="Копировать фразу">Копировать</button>
+        </div>
+      </div>
+      <div id="phraseWrap" class="phraseWrap" aria-live="polite" aria-busy="false">
+        <code id="phrase" class="phrase monospace">—</code>
+      </div>
+
+      <details class="historyBox">
+        <summary>История (последние 30)</summary>
+        <div class="historyActions">
+          <button type="button" id="exportBtn" class="btn ghost" title="Скачать историю в .txt">Экспорт .txt</button>
+          <button type="button" id="clearHistoryBtn" class="btn ghost" title="Очистить историю">Очистить</button>
+        </div>
+        <ol id="historyList" class="historyList"></ol>
+      </details>
+    </section>
+  </main>
+
+  <div class="container actionsBottom">
+    <button type="button" id="generateBtn" class="btn primary">Сгенерировать парольную фразу</button>
+  </div>
+
+  <footer class="container footer">
+    <div>Инструмент для генерации случайных парольных фраз Владимира Моденова — <span id="year"></span></div>
+    <div><a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></div>
+  </footer>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+  <script src="/js/yandex_counter.js"></script>
+  
+</body>
+</html>

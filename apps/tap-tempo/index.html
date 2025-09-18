@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="author" content="Владимир Моденов" />
+  <meta name="description" content="Tap Tempo — измеритель BPM по кликам/тапам/пробелу. Легкий и минималистичный инструмент от Владимирa Моденова." />
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://modenov.github.io/apps/tap-tempo/">
+  <title>Tap Tempo by Vladimir Modenov</title>
+
+  <!-- Roboto font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+  <main id="app">
+    <!-- Slide 1: main interactive screen -->
+    <section class="slide" id="slide-main" aria-label="Tap Tempo main screen">
+      <header class="header">
+        <h1>Tap Tempo by Vladimir Modenov</h1>
+        <p class="instr">Кликайте в любом месте страницы, нажимайте <kbd>Space</kbd> или тапайте на экране.</p>
+      </header>
+
+      <div class="center-area" id="center-area" tabindex="0" role="button" aria-pressed="false">
+        <!-- Big circle with BPM -->
+        <div id="bpm-circle" class="bpm-circle" title="Кликните, чтобы скопировать BPM">
+          <div class="bpm-value" id="bpm-value">—</div>
+          <div class="bpm-label" id="bpm-label">—</div>
+        </div>
+
+        <!-- Controls under the circle -->
+        <div class="controls">
+          <div class="smoothing">
+            <label for="smooth-select">Сглаживание:</label>
+            <select id="smooth-select" aria-label="Сглаживание">
+              <option value="4">По 4 ударам</option>
+              <option value="8" selected>По 8 ударам</option>
+              <option value="12">По 12 ударам</option>
+            </select>
+          </div>
+
+          <div class="adjust">
+            <button id="minus5" title="-5 BPM">-5</button>
+            <button id="minus1" title="-1 BPM">-1</button>
+            <button id="reset" title="Сброс (Backspace)">Сброс</button>
+            <button id="plus1" title="+1 BPM">+1</button>
+            <button id="plus5" title="+5 BPM">+5</button>
+          </div>
+
+          <div class="actions">
+            <button id="copy-bpm" title="Копировать BPM">Скопировать BPM</button>
+            <label class="toggle">
+              <input type="checkbox" id="metronome-toggle" /> <span>Звук метронома</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="vibrate-toggle" checked /> <span>Вибрация при нажатии</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Saved presets -->
+        <div class="presets">
+          <h3>Сохранённые пресеты</h3>
+          <div id="presets-list" class="presets-list"></div>
+          <div class="preset-actions">
+            <button id="save-preset">Сохранить текущий</button>
+            <button id="clear-presets">Очистить</button>
+          </div>
+        </div>
+
+        <!-- Hotkeys hint -->
+        <div class="hotkeys">
+          <strong>Горячие клавиши:</strong>
+          <span><kbd>Space</kbd> — тап</span>
+          <span><kbd>Backspace</kbd> — сброс</span>
+          <span><kbd>↑/↓</kbd> — ±1</span>
+          <span><kbd>Shift+↑/↓</kbd> — ±5</span>
+          <span><kbd>M</kbd> — метроном</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: explanation -->
+    <section class="slide" id="slide-info" aria-label="Информация о BPM и сервисе">
+      <article class="info">
+        <h2>Что такое BPM?</h2>
+        <p>
+          BPM (beats per minute) — это количество ударов в минуту. В музыке BPM определяет темп композиции: чем больше BPM, тем быстрее ощущается ритм.
+        </p>
+
+        <h3>Как работает сервис</h3>
+        <p>
+          Вы просто тапаете в любом месте страницы, нажимаете пробел или касаетесь экрана. Сервис измеряет интервалы между нажатиями, усредняет их по выбранному окну (4/8/12) и показывает текущий BPM в большом круге.
+          Если между тапами прошло более 3 секунд, измерение автоматически сбрасывается и начнётся новый замер.
+        </p>
+
+        <h3>Итальянские термины темпа (от медленного к быстрому)</h3>
+        <ul>
+          <li>Larghissimo &lt; 20</li>
+          <li>Largo 40–60</li>
+          <li>Larghetto 60–66</li>
+          <li>Lento 40–60</li>
+          <li>Adagio 66–76</li>
+          <li>Andante 76–108</li>
+          <li>Moderato 108–120</li>
+          <li>Allegretto 112–120</li>
+          <li>Allegro 120–168</li>
+          <li>Presto 168–200</li>
+          <li>Prestissimo &gt;200</li>
+        </ul>
+
+        <h3>Какой темп под что подходит — практические советы</h3>
+        <ul>
+          <li><strong>40–76 BPM</strong> — медленные, атмосферные, драматические вещи; часто подходит для эмбиента, баллад или медленных инди-треков.</li>
+          <li><strong>76–108 BPM</strong> — спокойный, разговорный темп; подходит для стилевых экспериментов, лёгкого downtempo, trip‑hop.</li>
+          <li><strong>108–120 BPM</strong> — средний темп; хорошо для попа, синт‑попа, groovy-инди, творческих экспериментов.</li>
+          <li><strong>120–140 BPM</strong> — танцевальный, house/tech‑house/indie dance границы; энергично и драйвово.</li>
+          <li><strong>140–160+ BPM</strong> — techno, breakbeat, drum'n'bass; высокий темп для клубной динамики.</li>
+        </ul>
+
+        <footer class="footer">
+          <p>&copy; <span id="year"></span> Tap Tempo by Владимир Моденов — <a href="mailto:vmodenov@gmail.com">vmodenov@gmail.com</a></p>
+        </footer>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="/js/yandex_counter.js"></script>
+
+  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+</body>
+</html>

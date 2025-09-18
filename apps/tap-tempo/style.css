@@ -1,0 +1,86 @@
+/* style.css
+   Minimalist Tap Tempo app styles.
+   Шрифт: Roboto.
+*/
+
+:root{
+  --bg:#ffffff;
+  --text:#1a1a1a;
+  --muted:#666;
+  --accent:#222;
+  --circle-size: min(48vmin, 420px);
+  --pastel-duration: 550ms;
+  --control-gap: 10px;
+  --radius: 22px;
+  --shadow: 0 6px 20px rgba(10,10,10,0.06);
+  --glass: rgba(255,255,255,0.6);
+}
+
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0;font-family:Roboto,system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+main{height:100%;overflow-y:auto;scroll-behavior:smooth;}
+
+/* Each slide = full viewport height */
+.slide{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+.header{max-width:900px;text-align:center;margin-bottom:18px;}
+.header h1{font-weight:700;margin:0;font-size:20px}
+.instr{color:var(--muted);margin-top:6px}
+
+/* Center area holds interactive circle + controls */
+.center-area{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:1100px;padding:18px}
+.bpm-circle{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:var(--circle-size);height:var(--circle-size);border-radius:50%;
+  background:linear-gradient(180deg, rgba(250,250,250,1), rgba(245,245,245,1));
+  box-shadow: var(--shadow);
+  border: 6px solid rgba(0,0,0,0.04);
+  transition: transform 160ms ease, box-shadow 160ms;
+  cursor:pointer;
+  user-select:none;
+}
+.bpm-circle:active{transform:scale(0.99)}
+.bpm-value{font-size: clamp(34px, 14vmin, 120px); font-weight:900; letter-spacing: -2px;}
+.bpm-label{font-size:18px;color:var(--muted);margin-top:6px}
+
+/* Controls */
+.controls{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.smoothing{display:flex;align-items:center;gap:10px}
+.adjust{display:flex;gap:8px}
+.adjust button, .actions button, .preset-actions button{
+  background:#fff;border:1px solid #eee;padding:8px 12px;border-radius:10px;cursor:pointer;box-shadow:var(--shadow);
+}
+.adjust button{min-width:56px}
+.toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;background:transparent;border-radius:8px;color:var(--muted)}
+
+/* Presets */
+.presets{width:100%;max-width:720px;margin-top:8px}
+.presets-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.preset-badge{padding:8px 12px;border-radius:999px;background:#f5f7fb;border:1px solid #eee;cursor:pointer;box-shadow:var(--shadow)}
+
+/* Hotkeys hint */
+.hotkeys{margin-top:8px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:13px}
+kbd{background:#f3f4f6;padding:4px 8px;border-radius:6px;border:1px solid #e6e7ea;font-weight:700}
+
+/* Info slide */
+.info{max-width:900px;padding:18px}
+.info h2{margin-top:0}
+.footer{margin-top:28px;color:var(--muted)}
+
+/* Pastel flash overlay */
+.flash {
+  position:fixed;inset:0;pointer-events:none;mix-blend-mode:normal;opacity:0;transition:opacity var(--pastel-duration) ease;
+  z-index:0;
+}
+.flash.show{opacity:1}
+
+/* Responsive */
+@media (max-width:700px){
+  :root{--circle-size: min(70vmin, 340px)}
+  .header h1{font-size:18px}
+  .bpm-label{font-size:15px}
+  .hotkeys{font-size:12px}
+}
+
+/* Small visual polish */
+.info ul{line-height:1.5}

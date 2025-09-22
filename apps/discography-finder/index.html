@@ -41,8 +41,8 @@
     }
     .inputs { display: grid; gap: 12px; margin-top: 8px; }
     .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-    .input, .btn, textarea { border: 2px solid #e9e9f2; outline: none; border-radius: 999px; padding: 14px 18px; font-size: 1.05rem; }
-    .input:focus, textarea:focus { border-color: var(--brand); box-shadow: var(--ring); }
+    .input, .btn { border: 2px solid #e9e9f2; outline: none; border-radius: 999px; padding: 14px 18px; font-size: 1.05rem; }
+    .input:focus { border-color: var(--brand); box-shadow: var(--ring); }
     .btn { background: var(--brand); color: #fff; cursor: pointer; padding-inline: 24px; transition: background .2s ease; }
     .btn:hover { background: var(--brand-2); }
     .token-row { grid-template-columns: 1fr auto; }
@@ -72,20 +72,17 @@
 
       <section class="search-card" aria-label="Поисковая форма">
         <div class="inputs">
-          <!-- Основной запрос -->
           <div class="row">
             <input id="artistInput" class="input" type="search" placeholder="Имя артиста…" aria-label="Имя артиста" />
             <button id="searchBtn" class="btn" type="button">Искать</button>
           </div>
 
-          <!-- Токен Discogs (опционально) -->
           <div class="row token-row">
             <input id="tokenInput" class="input" type="password" placeholder="Discogs Personal Access Token (необязательно)" aria-label="Discogs token" />
             <button id="saveTokenBtn" class="btn" type="button" title="Сохранить токен в браузере">Сохранить</button>
           </div>
           <div class="token-note">Токен хранится только в вашем браузере (LocalStorage). Если поле пустое — работает только Wikipedia. <span class="badge" title="Безопасно">read-only</span></div>
 
-          <!-- Инструкция по получению токена -->
           <details class="instructions">
             <summary>Как получить токен Discogs?</summary>
             <ol>
@@ -93,7 +90,7 @@
               <li>Откройте <em>Settings → Developers</em> и нажмите <em>Generate new token</em>.</li>
               <li>Скопируйте строку токена и вставьте её в поле выше, нажмите «Сохранить».</li>
             </ol>
-            <p class="meta">Токен даёт доступ только к публичному поиску (read-only). Его могут увидеть в исходном коде страницы, если вы его вставите — это безопасно, но общий лимит запросов токена может расходоваться быстрее.</p>
+            <p class="meta">Токен даёт доступ только к публичному поиску (read-only). Если вставите его на публичной странице — это безопасно, но лимит запросов токена расходуется всеми посетителями.</p>
           </details>
         </div>
 
@@ -143,9 +140,35 @@
 
     function toTitle(str) { return (str || '').replace(/_/g, ' ').trim(); }
 
+    // Удаляем скобочные пометки вида "(album)", "(Artist album)" и т.п. и похожие хвосты
+    function cleanAlbumTitle(title) {
+      if (!title) return '';
+      return String(title)
+        // любые круглые скобки, где встречается слово "album"
+        .replace(/\s*\([^)]*\balbum\b[^)]*\)\s*/gi, ' ')
+        // редко встречающиеся хвосты — тире или дефис + album
+        .replace(/\s*[-—–]\s*album\b/gi, ' ')
+        // квадратные скобки с пометкой album
+        .replace(/\s*\[[^\]]*\balbum\b[^\]]*\]\s*/gi, ' ')
+        // схлопываем лишние пробелы
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    }
+
     function uniqueBy(arr, keyFn) {
       const seen = new Set();
-      return arr.filter((x) => { const k = keyFn(x); if (seen.has(k)) return false; seen.add(k); seen.add(k); return true; });
+      return arr.filter((x) => { const k = keyFn(x); if (seen.has(k)) return false; seen.add(k); return true; });
+    }
+
+    // Нормализация ссылки Discogs: абсолютная https + локаль /ru/
+    function normalizeDiscogsUri(uri) {
+      if (!uri) return null;
+      let out = uri;
+      if (out.startsWith('/')) out = 'https://www.discogs.com' + out;
+      out = out.replace(/^http:\/\//i, 'https://');
+      // вставляем /ru/ после домена, если её нет (и если уже не стоит другая локаль)
+      out = out.replace(/^https:\/\/www\.discogs\.com\/(?!ru\/)(?=master|artist|release|label|search|sell|user)/i, 'https://www.discogs.com/ru/');
+      return out;
     }
 
     // Безопасная загрузка JSON с таймаутом
@@ -163,13 +186,11 @@
     // Wikipedia: поиск страницы дискографии и парсинг секции "Studio albums"
     // ==========================
     async function findDiscographyPage(artist) {
-      // Сначала ищем "<artist> discography"
       const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&list=search&srsearch=${encodeURIComponent(artist + ' discography')}&srlimit=5`;
       const data = await fetchJSON(searchUrl);
       const hit = (data.query.search || []).find(s => /discography/i.test(s.title));
       if (hit) return hit.pageid;
 
-      // Фолбэк: основная страница артиста
       const pageUrl = `https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&titles=${encodeURIComponent(artist)}&prop=info`;
       const pageData = await fetchJSON(pageUrl);
       const pages = pageData.query.pages;
@@ -181,13 +202,11 @@
       const url = `https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&pageid=${pageId}&prop=sections`;
       const data = await fetchJSON(url);
       const sections = data.parse?.sections || [];
-      // Ищем секции по тексту
       const target = sections.find(s => /studio albums/i.test(s.line));
       return target ? Number(target.index) : null;
     }
 
     async function parseStudioAlbums(pageId, sectionIndex) {
-      // Забираем HTML секции и парсим ссылки/таблицы
       const url = `https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&pageid=${pageId}&prop=text&section=${sectionIndex}`;
       const data = await fetchJSON(url);
       const html = data.parse?.text?.['*'] || '';
@@ -200,17 +219,13 @@
       div.querySelectorAll('table.wikitable').forEach(tbl => {
         const rows = Array.from(tbl.querySelectorAll('tr'));
         rows.slice(1).forEach(tr => {
-          const cells = tr.querySelectorAll('td, th');
-          if (!cells.length) return;
-          // Находим первую ссылку в строке — обычно это название альбома
           const link = tr.querySelector('i a, td a');
           if (link && link.getAttribute('href')?.startsWith('/wiki/')) {
-            const title = link.getAttribute('title') || link.textContent.trim();
-            // Год часто в первом или втором столбце
+            let title = link.getAttribute('title') || link.textContent.trim();
             const yearMatch = tr.textContent.match(/\b(19\d{2}|20\d{2})\b/);
             const year = yearMatch ? yearMatch[0] : undefined;
             albums.push({
-              title: title.trim(),
+              title: cleanAlbumTitle(title),
               year,
               wikiUrl: new URL(link.getAttribute('href'), 'https://en.wikipedia.org').toString(),
             });
@@ -222,12 +237,12 @@
       div.querySelectorAll('ul > li').forEach(li => {
         const link = li.querySelector('i a, a');
         if (link && link.getAttribute('href')?.startsWith('/wiki/')) {
-          const title = link.getAttribute('title') || link.textContent.trim();
+          let title = link.getAttribute('title') || link.textContent.trim();
           const yearMatch = li.textContent.match(/\b(19\d{2}|20\d{2})\b/);
           const year = yearMatch ? yearMatch[0] : undefined;
           if (/album/i.test(title) || /\balbum\b/i.test(li.textContent)) {
             albums.push({
-              title: title.trim(),
+              title: cleanAlbumTitle(title),
               year,
               wikiUrl: new URL(link.getAttribute('href'), 'https://en.wikipedia.org').toString(),
             });
@@ -235,7 +250,7 @@
         }
       });
 
-      // Убираем дубликаты по названию (регистронезависимо)
+      // Убираем дубликаты по очищенному названию
       return uniqueBy(albums, a => a.title.toLowerCase());
     }
 
@@ -244,17 +259,16 @@
       if (!pageId) return [];
       const sectionIdx = await getStudioSectionIndex(pageId);
       if (!sectionIdx) return [];
-      const albums = await parseStudioAlbums(pageId, sectionIdx);
-      return albums;
+      return await parseStudioAlbums(pageId, sectionIdx);
     }
 
     // ==========================
-    // Discogs: поиск мастеров по названию альбома (если введён токен)
+    // Discogs: поиск master-записи по названию (если введён токен)
     // ==========================
     async function fetchDiscogsLink(artist, albumTitle, token) {
       if (!token) return null;
       const url = new URL('https://api.discogs.com/database/search');
-      url.searchParams.set('type', 'master'); // берём master-записи, а не конкретные релизы
+      url.searchParams.set('type', 'master');
       url.searchParams.set('format', 'Album');
       url.searchParams.set('artist', artist);
       url.searchParams.set('release_title', albumTitle);
@@ -266,8 +280,8 @@
         const data = await fetchJSON(url.toString());
         const results = data.results || [];
         if (!results.length) return null;
-        // Наиболее релевантный — первый
-        return results[0]?.uri || null;
+        const uri = results[0]?.uri || results[0]?.master_url || results[0]?.resource_url || null;
+        return normalizeDiscogsUri(uri);
       } catch (e) {
         console.warn('Discogs error for', albumTitle, e);
         return null;
@@ -276,9 +290,8 @@
 
     async function enrichWithDiscogs(albums, artist, token) {
       if (!token) return albums;
-      // Параллельное обогащение, но с ограничением одновременных запросов
       const concurrency = 4;
-      const queue = albums.map((a, i) => i);
+      const queue = albums.map((_, i) => i);
       async function worker() {
         while (queue.length) {
           const idx = queue.shift();
@@ -353,6 +366,6 @@
   </script>
 
   <script src="/js/yandex_counter.js"></script>
-
+  
 </body>
 </html>

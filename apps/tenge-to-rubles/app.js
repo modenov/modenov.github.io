@@ -1,84 +1,31 @@
-// Функция получения курса KZT → RUB с надежным CORS
-async function fetchRate() {
-    const CACHE_KEY = "kzt_rub_rate";
-    const CACHE_TIME_KEY = "kzt_rub_rate_time";
-    const CACHE_TTL = 60 * 60 * 1000; // 1 час
+document.getElementById("convertBtn").addEventListener("click", async () => {
+  const kzt = parseFloat(document.getElementById("kztInput").value);
+  const resultEl = document.getElementById("result");
+  const errorEl = document.getElementById("error");
 
-    // Проверяем кэш
-    const cachedRate = sessionStorage.getItem(CACHE_KEY);
-    const cachedTime = sessionStorage.getItem(CACHE_TIME_KEY);
+  resultEl.textContent = "";
+  errorEl.textContent = "";
 
-    if (cachedRate && cachedTime && (Date.now() - cachedTime < CACHE_TTL)) {
-        return parseFloat(cachedRate);
-    }
+  if (isNaN(kzt) || kzt <= 0) {
+    errorEl.textContent = "Введите корректное число.";
+    return;
+  }
 
-    try {
-        // Новый API, стабильный CORS
-        const url = "https://open.er-api.com/v6/latest/KZT";
-        const response = await fetch(url);
+  try {
+    const res = await fetch("https://api.exchangerate.host/latest?base=KZT&symbols=RUB");
+    if (!res.ok) throw new Error("HTTP error");
 
-        if (!response.ok) {
-            throw new Error("Server error");
-        }
+    const data = await res.json();
+    const rate = data.rates.RUB;
 
-        const data = await response.json();
+    if (!rate) throw new Error("Rate missing");
 
-        if (!data.rates || !data.rates.RUB) {
-            throw new Error("Rate not found");
-        }
+    let rub = kzt * rate;
+    rub *= 1.08;
+    rub += 100;
 
-        const rate = data.rates.RUB;
-
-        // Кэшируем
-        sessionStorage.setItem(CACHE_KEY, rate);
-        sessionStorage.setItem(CACHE_TIME_KEY, Date.now());
-
-        return rate;
-    } catch (err) {
-        console.error("Currency fetch error:", err);
-        throw new Error("Не удалось получить курс валют.");
-    }
-}
-
-// Основная логика конвертации
-async function convert() {
-    const input = document.getElementById("priceKZT");
-    const result = document.getElementById("result");
-    const value = parseFloat(input.value);
-
-    if (isNaN(value) || value <= 0) {
-        result.textContent = "Введите корректную сумму в тенге.";
-        return;
-    }
-
-    result.textContent = "Загрузка…";
-
-    try {
-        const rate = await fetchRate();
-        let rub = value * rate;
-
-        // +8% посредникам
-        rub *= 1.08;
-
-        // +100 ₽ Steam
-        rub += 100;
-
-        const finalRub = Math.ceil(rub);
-
-        result.textContent = `Примерно ${finalRub} ₽`;
-    } catch (err) {
-        result.textContent = "Ошибка: " + err.message + " Проверьте подключение.";
-    }
-}
-
-// Тёмная тема (оставляем как есть, только выносим функцию)
-function initAutoTheme() {
-    const hour = new Date().getHours();
-    const isNight = hour >= 19 || hour < 7;
-    document.documentElement.classList.toggle("dark", isNight);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    initAutoTheme();
-    document.getElementById("convertBtn").addEventListener("click", convert);
+    resultEl.textContent = "Итого: " + Math.ceil(rub) + " ₽";
+  } catch (e) {
+    errorEl.textContent = "Ошибка получения курса. Попробуйте позже.";
+  }
 });

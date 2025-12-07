@@ -1,53 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="author" content="Владимир Моденов" />
-  <meta name="description" content="Простой минималистичный конвертор из казахских тенге в российские рубли — для геймеров, пополняющих Steam через Казахстан." />
-  <meta property="og:title" content="Tenge → Rubles — конвертор для геймеров" />
-  <meta property="og:description" content="Посчитайте, сколько рублей нужно положить на Steam, чтобы получить нужное количество тенге (с учётом комиссий посредников и Steam)." />
-  <meta property="og:url" content="https://modenov.github.io/apps/tenge-to-rubles/" />
-  <title>Tenge → Rubles — конвертор для геймеров</title>
-
-  <!-- Roboto font -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/png" href="/images/favicon.png">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author" content="Владимир Моденов" />
+<title>Конвертер тенге → рубли</title>
+<link rel="stylesheet" href="styles.css" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="card">
-    <h1 id="app-title">Tenge → Rubles</h1>
-    <p class="lead">Введите цену в казахских тенге (KZT). Нажмите <strong>Конвертировать</strong>, чтобы узнать, сколько нужно положить в российские рубли (RUB) с учётом комиссии посредников и возможных комиссий Steam.</p>
+<div class="container">
+  <h1>Конвертер тенге → рубли</h1>
+  <p class="description">Введите стоимость игры в тенге. Мы рассчитаем, сколько рублей потребуется положить на баланс Steam.</p>
 
-    <label class="field" for="kzt-input">Цена в тенге (KZT)</label>
-    <input id="kzt-input" type="number" inputmode="decimal" placeholder="Например, 1999" min="0" step="0.01" aria-describedby="kzt-hint">
+  <input id="kztInput" type="number" placeholder="Цена в тенге (KZT)" />
 
-    <div id="kzt-hint" class="hint">Поддерживается дробная сумма. Вы можете указать цену как в магазине Казахстана, так и цену в карточке игры.</div>
+  <button id="convertBtn">Конвертировать</button>
 
-    <button id="convert-btn" class="btn">Конвертировать</button>
+  <div id="result" class="result"></div>
+  <div id="error" class="error"></div>
+</div>
 
-    <div id="result" class="result" aria-live="polite" hidden>
-      <div class="result-row"><span>Курс (KZT → RUB):</span> <strong id="rate">—</strong></div>
-      <div class="result-row"><span>Сумма в рублях (без комиссий):</span> <strong id="raw-rub">—</strong></div>
-      <div class="result-row"><span>Итог с 8% посредников:</span> <strong id="with-fee">—</strong></div>
-      <div class="result-row"><span>Рекомендуемая сумма для пополнения (добавляем +100 ₽):</span> <strong id="final">—</strong></div>
-      <div class="note">Результат округлён до копеек. Курсы получены в реальном времени; при ошибке API проверьте подключение.</div>
-    </div>
-
-    <div id="error" class="error" role="alert" hidden></div>
-
-    <footer class="footer">
-      <small>Автор: Владимир Моденов • Размещено: <a href="https://modenov.github.io/apps/tenge-to-rubles/" target="_blank" rel="noopener">modenov.github.io/apps/tenge-to-rubles/</a></small>
-    </footer>
-  </main>
-
-  <script src="app.js" defer></script>
-  <script src="/js/yandex_counter.js"></script>
-
-  <noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-
+<script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Конвертор тенге → рубли (для Steam)</title>
+    <meta name="author" content="Владимир Моденов">
+    <meta name="description" content="Преобразуй цену игры в тенге в рубли + учти комиссии посредников и Steam.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+<div class="container">
+    <h1>Конвертор KZT → RUB для Steam</h1>
+    <label for="kzt">Цена игры в тенге (KZT):</label>
+    <input type="number" id="kzt" placeholder="Например, 4500">
+    <button id="convertBtn">Конвертировать</button>
+    <div id="result" class="result"></div>
+    <div class="hint">
+        Вводите цену, которую показывает Steam в тенге. Калькулятор выдаст, сколько рублей нужно положить, с учётом комиссий.
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="/js/yandex_counter.js"></script>
+
+<noscript><div><img src="https://mc.yandex.ru/watch/104015469" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+</body>
+</html>
